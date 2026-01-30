@@ -24,6 +24,8 @@ app.post("/analyze", upload.single("file"), (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("Backend API running on http://localhost:3000");
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, () => {
+  console.log(`Backend API running on http://localhost:${PORT}`);
 });

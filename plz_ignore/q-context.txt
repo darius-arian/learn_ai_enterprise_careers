@@ -92,3 +92,4 @@ This repository serves as a learning resource for enterprise AI career developme
 - Contains standard Git repository structure with .git folder
 - Uses npm for package management in both frontend and backend
 - Follows modern JavaScript/React development practices
+- **Temporary workspace**: /mnt/c/sajad_ai/p/q-context-trash (use for scripts, temporary files, etc.)

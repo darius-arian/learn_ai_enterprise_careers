@@ -17,7 +17,7 @@ function App() {
     setStatus("Sending file to backend...");
 
     try {
-      await fetch("http://localhost:3000/analyze", {
+      await fetch("http://localhost:3001/analyze", {
         method: "POST",
         body: (() => {
           const fd = new FormData();
