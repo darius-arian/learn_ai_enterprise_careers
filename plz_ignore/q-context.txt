@@ -1,0 +1,94 @@
+# Q Context File for learn_ai_enterprise_careers Repository
+
+## Repository Overview
+- **Location**: C:\sajad_ai\p\learn_ai_enterprise_careers
+- **Type**: Local Git Repository
+- **Purpose**: Educational content for AI enterprise career development
+
+## Repository Structure
+```
+learn_ai_enterprise_careers/
+├── .git/                    # Git repository metadata
+├── .gitignore              # Git ignore rules
+├── LICENSE                 # Repository license
+├── README.md               # Main repository documentation (empty)
+├── plz_ignore/             # Utility folder
+│   └── q-context.txt       # This context file
+└── videos/                 # Video tutorial projects
+    └── 01-aws-comprehend-review-analysis/
+```
+
+## Videos Folder
+The `videos/` directory contains tutorial projects organized by video number. Currently contains:
+
+### Video 01: AWS Comprehend Review Analysis
+**Path**: `videos/01-aws-comprehend-review-analysis/`
+
+**Project Description**: 
+Enterprise-scale product review analysis system using AWS Comprehend. This is a full-stack application demonstrating AWS AI services integration.
+
+**Architecture**:
+- **Frontend**: React (Vite) application for file upload and analysis triggering
+- **Backend**: Express.js server with file upload capabilities
+- **Future AWS Integration**: Planned SQS, Lambda, Comprehend, and EventBridge pipeline
+
+**Project Structure**:
+```
+01-aws-comprehend-review-analysis/
+├── README.md               # Project documentation
+├── backend/                # Express.js server
+│   ├── index.js           # Main server file
+│   ├── package.json       # Backend dependencies (express, cors, multer)
+│   ├── package-lock.json  # Dependency lock file
+│   └── node_modules/      # Backend dependencies
+├── frontend/              # React application
+│   ├── src/               # Source code
+│   │   ├── App.jsx        # Main React component
+│   │   ├── App.css        # Application styles
+│   │   ├── index.css      # Global styles
+│   │   ├── main.jsx       # React entry point
+│   │   └── assets/        # Static assets
+│   ├── public/            # Public assets
+│   ├── index.html         # HTML template
+│   ├── package.json       # Frontend dependencies (React, Vite, ESLint)
+│   ├── package-lock.json  # Dependency lock file
+│   ├── vite.config.js     # Vite configuration
+│   ├── eslint.config.js   # ESLint configuration
+│   ├── .gitignore         # Frontend-specific ignores
+│   ├── README.md          # Frontend documentation
+│   └── node_modules/      # Frontend dependencies
+└── data/                  # Data folder (currently empty)
+```
+
+**Technology Stack**:
+- **Frontend**: React 18, Vite, ESLint, React Hooks, React Refresh
+- **Backend**: Express.js, CORS, Multer (file uploads)
+- **Development**: Node.js, npm
+- **Future AWS Services**: SQS, Lambda, Comprehend, EventBridge
+
+**Current Implementation Status**:
+- ✅ React frontend with file upload capability
+- ✅ Express backend with CORS and file upload support
+- ✅ Local development environment setup
+- 🔄 AWS integration (planned for future videos)
+
+**Key Features**:
+- JSON file upload for product reviews
+- API endpoint for triggering analysis
+- Modern React development with Vite
+- Cross-origin resource sharing enabled
+- File upload handling with Multer
+
+**Development Commands**:
+- Frontend: `cd frontend && npm install && npm run dev`
+- Backend: `cd backend && npm install && npm start`
+
+## Repository Context
+This repository serves as a learning resource for enterprise AI career development, focusing on practical AWS implementations and modern web development practices. The content is structured as video tutorials with accompanying code examples.
+
+## File System Notes
+- Repository is located on Windows machine at C:\sajad_ai\p\learn_ai_enterprise_careers
+- Accessible via WSL Ubuntu at /mnt/c/sajad_ai/p/learn_ai_enterprise_careers
+- Contains standard Git repository structure with .git folder
+- Uses npm for package management in both frontend and backend
+- Follows modern JavaScript/React development practices
