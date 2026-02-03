@@ -1,7 +1,7 @@
 # Q Context File for learn_ai_enterprise_careers Repository
 
 ## Repository Overview
-- **Location**: C:\sajad_ai\p\learn_ai_enterprise_careers
+- **Location**: ~/darius_ai/p/learn_ai_enterprise_careers
 - **Type**: Local Git Repository
 - **Purpose**: Educational content for AI enterprise career development
 
@@ -87,9 +87,8 @@ Enterprise-scale product review analysis system using AWS Comprehend. This is a 
 This repository serves as a learning resource for enterprise AI career development, focusing on practical AWS implementations and modern web development practices. The content is structured as video tutorials with accompanying code examples.
 
 ## File System Notes
-- Repository is located on Windows machine at C:\sajad_ai\p\learn_ai_enterprise_careers
-- Accessible via WSL Ubuntu at /mnt/c/sajad_ai/p/learn_ai_enterprise_careers
+- Repository is located on Ubuntu machine at ~/darius_ai/p/learn_ai_enterprise_careers
 - Contains standard Git repository structure with .git folder
 - Uses npm for package management in both frontend and backend
 - Follows modern JavaScript/React development practices
-- **Temporary workspace**: /mnt/c/sajad_ai/p/q-context-trash (use for scripts, temporary files, etc.)
+- **Temporary workspace**: ~/darius_ai/p/q-context-trash (use for scripts, temporary files, etc.)
