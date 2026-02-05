@@ -1,94 +1,159 @@
-# Q Context File for learn_ai_enterprise_careers Repository
+# Context File for learn_ai_enterprise_careers Repository
 
 ## Repository Overview
 - **Location**: ~/darius_ai/p/learn_ai_enterprise_careers
-- **Type**: Local Git Repository
-- **Purpose**: Educational content for AI enterprise career development
+- **GitHub**: git@github.com:darius-arian/learn_ai_enterprise_careers.git (SSH configured)
+- **Owner Email**: sajad.rdel@gmail.com
+- **Type**: Educational content for AI enterprise career development
+- **License**: MIT
 
-## Repository Structure
+## Git Configuration
+- SSH key configured at ~/.ssh/id_ed25519
+- No password required for push/pull operations
+- Remote uses SSH protocol
+
+## Project Structure
 ```
 learn_ai_enterprise_careers/
-├── .git/                    # Git repository metadata
-├── .gitignore              # Git ignore rules
-├── LICENSE                 # Repository license
-├── README.md               # Main repository documentation (empty)
-├── plz_ignore/             # Utility folder
-│   └── q-context.txt       # This context file
-└── videos/                 # Video tutorial projects
+├── .git/
+├── .gitignore
+├── LICENSE
+├── README.md
+├── plz_ignore/
+│   └── q-context.txt       # This file
+└── videos/
     └── 01-aws-comprehend-review-analysis/
 ```
 
-## Videos Folder
-The `videos/` directory contains tutorial projects organized by video number. Currently contains:
+## Video 01: AWS Comprehend Review Analysis
 
-### Video 01: AWS Comprehend Review Analysis
-**Path**: `videos/01-aws-comprehend-review-analysis/`
-
-**Project Description**: 
-Enterprise-scale product review analysis system using AWS Comprehend. This is a full-stack application demonstrating AWS AI services integration.
-
-**Architecture**:
-- **Frontend**: React (Vite) application for file upload and analysis triggering
-- **Backend**: Express.js server with file upload capabilities
-- **Future AWS Integration**: Planned SQS, Lambda, Comprehend, and EventBridge pipeline
-
-**Project Structure**:
+### Architecture Overview
 ```
-01-aws-comprehend-review-analysis/
-├── README.md               # Project documentation
-├── backend/                # Express.js server
-│   ├── index.js           # Main server file
-│   ├── package.json       # Backend dependencies (express, cors, multer)
-│   ├── package-lock.json  # Dependency lock file
-│   └── node_modules/      # Backend dependencies
-├── frontend/              # React application
-│   ├── src/               # Source code
-│   │   ├── App.jsx        # Main React component
-│   │   ├── App.css        # Application styles
-│   │   ├── index.css      # Global styles
-│   │   ├── main.jsx       # React entry point
-│   │   └── assets/        # Static assets
-│   ├── public/            # Public assets
-│   ├── index.html         # HTML template
-│   ├── package.json       # Frontend dependencies (React, Vite, ESLint)
-│   ├── package-lock.json  # Dependency lock file
-│   ├── vite.config.js     # Vite configuration
-│   ├── eslint.config.js   # ESLint configuration
-│   ├── .gitignore         # Frontend-specific ignores
-│   ├── README.md          # Frontend documentation
-│   └── node_modules/      # Frontend dependencies
-└── data/                  # Data folder (currently empty)
+React Frontend → Express Backend → S3 → SQS → Lambda → AWS Comprehend → Results
 ```
 
-**Technology Stack**:
-- **Frontend**: React 18, Vite, ESLint, React Hooks, React Refresh
-- **Backend**: Express.js, CORS, Multer (file uploads)
-- **Development**: Node.js, npm
-- **Future AWS Services**: SQS, Lambda, Comprehend, EventBridge
+**Full serverless pipeline for automated product review sentiment analysis**
 
-**Current Implementation Status**:
-- ✅ React frontend with file upload capability
-- ✅ Express backend with CORS and file upload support
-- ✅ Local development environment setup
-- 🔄 AWS integration (planned for future videos)
+### AWS Infrastructure (DEPLOYED & OPERATIONAL)
+- **S3 Bucket**: `review-analysis-bucket-darius`
+  - `01-aws-comprehend-review-analysis/review-analysis-uploads/` - uploaded JSON files
+  - `01-aws-comprehend-review-analysis/analysis-results/` - Comprehend analysis results
+- **SQS Queue**: `review-analysis-queue`
+- **Lambda Function**: `review-analysis-processor` (Python 3.9)
+- **IAM Role**: `review-analysis-lambda-role`
+- **Region**: us-east-1
 
-**Key Features**:
-- JSON file upload for product reviews
-- API endpoint for triggering analysis
-- Modern React development with Vite
-- Cross-origin resource sharing enabled
-- File upload handling with Multer
+### Lambda Function (~/lambda_function.py)
+**Comprehend Analysis Features (7 API calls per review):**
+1. Language Detection (`detect_dominant_language`)
+2. Sentiment Analysis (`detect_sentiment`)
+3. Key Phrase Extraction (`detect_key_phrases`)
+4. Entity Recognition (`detect_entities`)
+5. Syntax Analysis (`detect_syntax`)
+6. Targeted Sentiment (`detect_targeted_sentiment`)
+7. PII Detection (`detect_pii_entities`)
 
-**Development Commands**:
-- Frontend: `cd frontend && npm install && npm run dev`
-- Backend: `cd backend && npm install && npm start`
+**Key Implementation Details:**
+- Extracts timestamp from uploaded filename for result file naming
+- Handles multiple JSON structures (reviews array or nested product.reviews)
+- Processes all reviews in batch
+- Stores comprehensive analysis results back to S3
 
-## Repository Context
-This repository serves as a learning resource for enterprise AI career development, focusing on practical AWS implementations and modern web development practices. The content is structured as video tutorials with accompanying code examples.
+### Backend (Express.js)
+**File**: `videos/01-aws-comprehend-review-analysis/backend/index.js`
+**Port**: 3001
 
-## File System Notes
-- Repository is located on Ubuntu machine at ~/darius_ai/p/learn_ai_enterprise_careers
-- Contains standard Git repository structure with .git folder
-- Uses npm for package management in both frontend and backend
-- Follows modern JavaScript/React development practices
-- **Temporary workspace**: ~/darius_ai/p/q-context-trash (use for scripts, temporary files, etc.)
+**Endpoints:**
+- `POST /analyze` - Accepts JSON file upload, stores in S3, returns expectedResultFile
+- `GET /results/:expectedResultFile` - Polls S3 for analysis results (200 if ready, 202 if processing)
+
+**Features:**
+- File validation (JSON only, max 1MB)
+- Timestamp-based file naming (ISO format with hyphens)
+- S3 integration with AWS SDK v3
+- Environment-based configuration (.env file)
+
+**Dependencies**: express, cors, multer, @aws-sdk/client-s3, dotenv
+
+### Frontend (React + Vite)
+**File**: `videos/01-aws-comprehend-review-analysis/frontend/src/App.jsx`
+**Port**: 5173 (default Vite)
+
+**Features:**
+- File upload interface with validation
+- Analysis trigger button
+- Results polling with "See Results" button
+- **Data Visualizations (Recharts):**
+  - Language Distribution Pie Chart
+  - Sentiment Distribution Bar Chart (color-coded: green=positive, red=negative, gray=neutral, orange=mixed)
+- Responsive design (max-width: 1200px, centered)
+- Full JSON results display
+
+**Dependencies**: react, react-dom, recharts, vite
+
+### Development Setup
+**Backend:**
+```bash
+cd videos/01-aws-comprehend-review-analysis/backend
+npm install
+npm start  # Runs on port 3001
+```
+
+**Frontend:**
+```bash
+cd videos/01-aws-comprehend-review-analysis/frontend
+npm install
+npm run dev  # Runs on port 5173
+```
+
+**Run both in background:**
+```bash
+cd frontend && nohup npm run dev > frontend.log 2>&1 &
+cd backend && nohup npm start > backend.log 2>&1 &
+```
+
+**Stop servers:**
+```bash
+pkill -f "node index.js"
+pkill -f "vite"
+```
+
+### Data Flow
+1. User uploads JSON file via frontend
+2. Backend validates and uploads to S3 with timestamp
+3. S3 event triggers SQS message
+4. Lambda processes SQS message, reads file from S3
+5. Lambda calls Comprehend APIs for each review
+6. Lambda saves results to S3 with matching timestamp
+7. Frontend polls backend for results
+8. Backend checks S3 for result file
+9. Results displayed with charts and full JSON
+
+### Sample Data
+**Location**: `videos/01-aws-comprehend-review-analysis/data/product-reviews.json`
+Contains product reviews for testing the analysis pipeline
+
+### Recent Updates
+- Fixed timestamp format mismatch between backend and Lambda
+- Added Recharts visualizations (language pie chart, sentiment bar chart)
+- Made frontend responsive
+- Improved results polling with direct S3 key lookup
+- Added dark text color for better readability
+
+### Technology Stack
+- **Frontend**: React 19, Vite 7, Recharts, ESLint
+- **Backend**: Express 4, AWS SDK v3, Multer, dotenv
+- **AWS**: S3, SQS, Lambda, Comprehend, IAM
+- **Runtime**: Node.js (frontend/backend), Python 3.9 (Lambda)
+
+### Logs
+- Frontend: `videos/01-aws-comprehend-review-analysis/frontend/frontend.log`
+- Backend: `videos/01-aws-comprehend-review-analysis/backend/backend.log`
+
+## Notes for AI Assistant
+- Project is fully operational with complete AWS pipeline
+- SSH authentication configured - no password prompts
+- Lambda function updated to match backend timestamp format
+- All 7 Comprehend features are active and working
+- Frontend includes interactive data visualizations
+- Use ~/lambda_function.py for Lambda updates, then zip and deploy via AWS CLI
