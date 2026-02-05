@@ -4,7 +4,7 @@ function App() {
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState("");
   const [analysisComplete, setAnalysisComplete] = useState(false);
-  const [uploadedFileName, setUploadedFileName] = useState("");
+  const [expectedResultFile, setExpectedResultFile] = useState("");
   const [results, setResults] = useState(null);
 
   const onFileChange = (e) => {
@@ -34,7 +34,7 @@ function App() {
     setFile(selectedFile);
     setAnalysisComplete(false); // Reset when new file is selected
     setResults(null);
-    setUploadedFileName("");
+    setExpectedResultFile("");
   };
 
   const analyze = async () => {
@@ -59,9 +59,9 @@ function App() {
       const data = await response.json();
       
       if (response.ok) {
-        setStatus("Request accepted (200 OK) - Analysis in progress...");
+        setStatus(`Request accepted (200 OK) - Analysis in progress...`);
         setAnalysisComplete(true);
-        setUploadedFileName(data.fileName);
+        setExpectedResultFile(data.expectedResultFile);
       } else {
         setStatus(`Request failed: ${data.error}`);
       }
@@ -71,15 +71,15 @@ function App() {
   };
 
   const seeResults = async () => {
-    if (!uploadedFileName) {
-      alert("No file name available");
+    if (!expectedResultFile) {
+      alert("No expected result file available");
       return;
     }
 
     setStatus("Fetching results...");
 
     try {
-      const response = await fetch(`http://localhost:3001/results/${uploadedFileName}`);
+      const response = await fetch(`http://localhost:3001/results/${expectedResultFile}`);
       const data = await response.json();
 
       if (response.status === 200) {
@@ -97,7 +97,7 @@ function App() {
 
   return (
     <div style={{ padding: 40 }}>
-      <h1>AI Review Analyzer</h1>
+      <h1>test-feature</h1>
 
       <input type="file" accept=".json" onChange={onFileChange} />
       <br /><br />
@@ -117,6 +117,12 @@ function App() {
       </button>
 
       <p>{status}</p>
+      
+      {expectedResultFile && (
+        <div style={{ marginTop: 10, padding: 10, backgroundColor: '#e8f4fd', borderRadius: 5, border: '1px solid #b3d9ff' }}>
+          <strong>Expected Result File:</strong> {expectedResultFile}
+        </div>
+      )}
 
       {results && (
         <div style={{ marginTop: 20, padding: 20, border: '1px solid #ccc', borderRadius: 5 }}>
@@ -126,7 +132,7 @@ function App() {
           <p><strong>Total Reviews:</strong> {results.total_reviews}</p>
           
           <h4>Sample Results:</h4>
-          <pre style={{ backgroundColor: '#f5f5f5', padding: 10, borderRadius: 3, fontSize: 12, overflow: 'auto' }}>
+          <pre style={{ backgroundColor: '#f5f5f5', padding: 10, borderRadius: 3, fontSize: 12, overflow: 'auto', color: 'black' }}>
             {JSON.stringify(results, null, 2)}
           </pre>
         </div>

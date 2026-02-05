@@ -57,7 +57,8 @@ app.post("/analyze", upload.single("file"), async (req, res) => {
 
     return res.status(200).json({
       message: "Review analysis job accepted",
-      fileName: fileName
+      fileName: fileName,
+      expectedResultFile: `analysis-${timestamp}.json`
     });
   } catch (error) {
     console.error("S3 upload error:", error);
@@ -65,47 +66,41 @@ app.post("/analyze", upload.single("file"), async (req, res) => {
   }
 });
 
-app.get("/results/:fileName", async (req, res) => {
+app.get("/results/:expectedResultFile", async (req, res) => {
   try {
-    const { fileName } = req.params;
+    const { expectedResultFile } = req.params;
     
-    // List objects in analysis-results folder to find matching result
-    const listParams = {
-      Bucket: process.env.S3_BUCKET_NAME || "your-bucket-name",
-      Prefix: "01-aws-comprehend-review-analysis/analysis-results/"
-    };
-
-    const { Contents } = await s3Client.send(new ListObjectsV2Command(listParams));
+    // Construct the full S3 key for the expected result file
+    const resultKey = `01-aws-comprehend-review-analysis/analysis-results/${expectedResultFile}`;
     
-    // Find result file that corresponds to the uploaded file
-    const resultFile = Contents?.find(obj => 
-      obj.Key.includes('analysis-') && 
-      obj.Size > 0 && 
-      obj.Key !== "01-aws-comprehend-review-analysis/analysis-results/"
-    );
+    try {
+      // Try to get the specific analysis result from S3
+      const getParams = {
+        Bucket: process.env.S3_BUCKET_NAME || "your-bucket-name",
+        Key: resultKey
+      };
 
-    if (!resultFile) {
-      return res.status(202).json({ 
-        message: "No results found. Please wait a few more seconds and retry.",
-        status: "processing"
+      const response = await s3Client.send(new GetObjectCommand(getParams));
+      const resultContent = await response.Body.transformToString();
+      const analysisResults = JSON.parse(resultContent);
+
+      return res.status(200).json({
+        message: "Analysis results found",
+        status: "completed",
+        results: analysisResults
       });
+
+    } catch (s3Error) {
+      // If file doesn't exist yet, return processing status
+      if (s3Error.name === 'NoSuchKey') {
+        return res.status(202).json({ 
+          message: "Analysis in progress. Please wait a few more seconds and retry.",
+          status: "processing",
+          expectedFile: expectedResultFile
+        });
+      }
+      throw s3Error;
     }
-
-    // Get the analysis results from S3
-    const getParams = {
-      Bucket: process.env.S3_BUCKET_NAME || "your-bucket-name",
-      Key: resultFile.Key
-    };
-
-    const response = await s3Client.send(new GetObjectCommand(getParams));
-    const resultContent = await response.Body.transformToString();
-    const analysisResults = JSON.parse(resultContent);
-
-    return res.status(200).json({
-      message: "Analysis results found",
-      status: "completed",
-      results: analysisResults
-    });
 
   } catch (error) {
     console.error("Error fetching results:", error);
