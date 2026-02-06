@@ -7,12 +7,14 @@ function App() {
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [expectedResultFile, setExpectedResultFile] = useState("");
   const [results, setResults] = useState(null);
+  const [productInfo, setProductInfo] = useState(null);
 
   const onFileChange = (e) => {
     const selectedFile = e.target.files[0];
     
     if (!selectedFile) {
       setFile(null);
+      setProductInfo(null);
       return;
     }
 
@@ -21,6 +23,7 @@ function App() {
       alert("Please select a JSON file only");
       e.target.value = '';
       setFile(null);
+      setProductInfo(null);
       return;
     }
 
@@ -29,8 +32,23 @@ function App() {
       alert("File size must be less than 1MB");
       e.target.value = '';
       setFile(null);
+      setProductInfo(null);
       return;
     }
+
+    // Read file to extract product info
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const jsonData = JSON.parse(event.target.result);
+        if (jsonData.product) {
+          setProductInfo(jsonData.product);
+        }
+      } catch (error) {
+        console.error("Error parsing JSON:", error);
+      }
+    };
+    reader.readAsText(selectedFile);
 
     setFile(selectedFile);
     setAnalysisComplete(false); // Reset when new file is selected
@@ -119,6 +137,16 @@ function App() {
 
       <p>{status}</p>
       
+      {productInfo && (
+        <div style={{ marginTop: '10px', padding: '15px', backgroundColor: '#f0f8ff', borderRadius: '5px', border: '1px solid #4a90e2' }}>
+          <h4 style={{ marginTop: 0, color: '#2c5aa0' }}>Product Information</h4>
+          {productInfo.id && <p style={{ margin: '5px 0', color: '#333' }}><strong>Product ID:</strong> {productInfo.id}</p>}
+          {productInfo.name && <p style={{ margin: '5px 0', color: '#333' }}><strong>Product Name:</strong> {productInfo.name}</p>}
+          {productInfo.category && <p style={{ margin: '5px 0', color: '#333' }}><strong>Category:</strong> {productInfo.category}</p>}
+          {productInfo.release_date && <p style={{ margin: '5px 0', color: '#333' }}><strong>Release Date:</strong> {productInfo.release_date}</p>}
+        </div>
+      )}
+      
       {expectedResultFile && (
         <div style={{ marginTop: '10px', padding: '10px', backgroundColor: '#e8f4fd', borderRadius: '5px', border: '1px solid #b3d9ff', color: '#333' }}>
           <strong>Expected Result File:</strong> {expectedResultFile}
@@ -128,6 +156,25 @@ function App() {
       {results && (
         <div style={{ marginTop: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
           <h3>Analysis Results</h3>
+          
+          {results.analysis_results[0]?.original_review && (() => {
+            const firstReview = results.analysis_results[0].original_review;
+            const productInfo = firstReview.product_id || firstReview.product_name || firstReview.category;
+            
+            if (productInfo) {
+              return (
+                <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f0f8ff', borderRadius: '5px', border: '1px solid #4a90e2' }}>
+                  <h4 style={{ marginTop: 0, color: '#2c5aa0' }}>Product Information</h4>
+                  {firstReview.product_id && <p><strong>Product ID:</strong> {firstReview.product_id}</p>}
+                  {firstReview.product_name && <p><strong>Product Name:</strong> {firstReview.product_name}</p>}
+                  {firstReview.category && <p><strong>Category:</strong> {firstReview.category}</p>}
+                  {firstReview.release_date && <p><strong>Release Date:</strong> {firstReview.release_date}</p>}
+                </div>
+              );
+            }
+            return null;
+          })()}
+          
           <p><strong>Source File:</strong> {results.source_file}</p>
           <p><strong>Processed At:</strong> {results.processed_at}</p>
           <p><strong>Total Reviews:</strong> {results.total_reviews}</p>
@@ -306,12 +353,57 @@ function App() {
               return Object.entries(locationCounts)
                 .sort((a, b) => b[1] - a[1])
                 .map(([name, count]) => ({ name, count }));
-            })()} layout="vertical">
+            })()}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" />
-              <YAxis type="category" dataKey="name" width={150} />
+              <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} interval={0} />
+              <YAxis />
               <Tooltip />
+              <Legend />
               <Bar dataKey="count" fill="#FF5722" />
+            </BarChart>
+          </ResponsiveContainer>
+
+          <h4>Price Complaints by Location</h4>
+          <div style={{ fontSize: '14px', color: '#f5f5f5', marginTop: '5px' }}>
+            <p style={{ marginBottom: '8px' }}>
+              Combines sentiment analysis with entity recognition to identify which geographic regions have the most price-related complaints. 
+              This targeted analysis helps companies understand regional pricing sensitivity and adjust strategies accordingly. Critical for 
+              international pricing decisions and market-specific promotions.
+            </p>
+            <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Examples:</p>
+            <p style={{ margin: '2px 0' }}>1. Apple adjusts iPhone pricing by region based on complaint patterns</p>
+            <p style={{ margin: '2px 0' }}>2. Netflix offers different subscription tiers in price-sensitive markets</p>
+            <p style={{ margin: '2px 0' }}>3. Amazon Prime varies pricing based on regional affordability feedback</p>
+          </div>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={(() => {
+              const locationPriceComplaints = {};
+              results.analysis_results.forEach(item => {
+                const reviewText = item.original_review?.review_text || item.original_review?.text || '';
+                const hasPriceComplaint = reviewText.toLowerCase().includes('price') || 
+                                         reviewText.toLowerCase().includes('expensive') || 
+                                         reviewText.toLowerCase().includes('costly') ||
+                                         reviewText.includes('$1,499');
+                
+                if (hasPriceComplaint) {
+                  item.entities?.forEach(entity => {
+                    if (entity.Type === 'LOCATION') {
+                      const loc = entity.Text;
+                      locationPriceComplaints[loc] = (locationPriceComplaints[loc] || 0) + 1;
+                    }
+                  });
+                }
+              });
+              return Object.entries(locationPriceComplaints)
+                .sort((a, b) => b[1] - a[1])
+                .map(([name, count]) => ({ name, count }));
+            })()}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} interval={0} />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="count" fill="#f44336" name="Price Complaints" />
             </BarChart>
           </ResponsiveContainer>
 
@@ -402,7 +494,7 @@ function App() {
             })()}
           </div>
           
-          <h4>Sample Results:</h4>
+          <h4>Raw Comprehend Analysis Results:</h4>
           <pre style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '3px', fontSize: '12px', overflow: 'auto', color: 'black', maxWidth: '100%' }}>
             {JSON.stringify(results, null, 2)}
           </pre>
