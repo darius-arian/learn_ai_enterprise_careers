@@ -1,5 +1,8 @@
 ﻿import { useState } from "react";
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { ComposableMap, Geographies, Geography } from "react-simple-maps";
+
+const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
 function App() {
   const [file, setFile] = useState(null);
@@ -8,6 +11,7 @@ function App() {
   const [expectedResultFile, setExpectedResultFile] = useState("");
   const [results, setResults] = useState(null);
   const [productInfo, setProductInfo] = useState(null);
+  const [mapTooltip, setMapTooltip] = useState({ show: false, content: '', x: 0, y: 0 });
 
   const onFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -104,6 +108,9 @@ function App() {
       if (response.status === 200) {
         setResults(data.results);
         setStatus("Results loaded successfully!");
+        // Save to localStorage
+        localStorage.setItem('lastAnalysisResults', JSON.stringify(data.results));
+        localStorage.setItem('lastAnalysisTimestamp', new Date().toISOString());
       } else if (response.status === 202) {
         setStatus(data.message);
       } else {
@@ -114,48 +121,152 @@ function App() {
     }
   };
 
-  return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1>test-feature</h1>
+  const clearCache = () => {
+    localStorage.removeItem('lastAnalysisResults');
+    localStorage.removeItem('lastAnalysisTimestamp');
+    setResults(null);
+    setStatus("Cache cleared successfully!");
+  };
 
-      <input type="file" accept=".json" onChange={onFileChange} />
+  const loadFromCache = () => {
+    const cachedResults = localStorage.getItem('lastAnalysisResults');
+    const cachedTimestamp = localStorage.getItem('lastAnalysisTimestamp');
+    
+    if (cachedResults) {
+      setResults(JSON.parse(cachedResults));
+      const timestamp = cachedTimestamp ? new Date(cachedTimestamp).toLocaleString() : 'Unknown';
+      setStatus(`Loaded cached results from ${timestamp}`);
+    } else {
+      setStatus("No cached results found");
+      alert("No cached results available");
+    }
+  };
+
+  return (
+    <div style={{ 
+      padding: '20px', 
+      maxWidth: '1200px', 
+      margin: '0 auto', 
+      width: '100%', 
+      boxSizing: 'border-box',
+      overflowX: 'hidden'
+    }}>
+      <h1 style={{ fontSize: 'clamp(1.5rem, 5vw, 2rem)', wordBreak: 'break-word' }}>test-feature</h1>
+
+      <input type="file" accept=".json" onChange={onFileChange} style={{ 
+        width: '100%', 
+        maxWidth: '400px', 
+        marginBottom: '10px',
+        boxSizing: 'border-box'
+      }} />
       <br /><br />
 
-      <button onClick={analyze}>Analyze Reviews</button>
-      <button 
-        onClick={seeResults} 
-        disabled={!analysisComplete}
-        style={{
-          marginLeft: '10px',
-          backgroundColor: analysisComplete ? '#4CAF50' : '#cccccc',
-          color: analysisComplete ? 'white' : '#666666',
-          cursor: analysisComplete ? 'pointer' : 'not-allowed'
-        }}
-      >
-        See Results
-      </button>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
+        <button onClick={analyze} style={{ 
+          padding: '10px 20px', 
+          fontSize: '16px',
+          cursor: 'pointer',
+          flex: '1 1 auto',
+          minWidth: '150px'
+        }}>
+          Analyze Reviews
+        </button>
+        <button 
+          onClick={seeResults} 
+          disabled={!analysisComplete}
+          style={{
+            padding: '10px 20px',
+            fontSize: '16px',
+            backgroundColor: analysisComplete ? '#4CAF50' : '#cccccc',
+            color: analysisComplete ? 'white' : '#666666',
+            cursor: analysisComplete ? 'pointer' : 'not-allowed',
+            flex: '1 1 auto',
+            minWidth: '150px',
+            border: 'none',
+            borderRadius: '4px'
+          }}
+        >
+          See Results
+        </button>
+        <button 
+          onClick={loadFromCache}
+          style={{
+            padding: '10px 20px',
+            fontSize: '16px',
+            backgroundColor: '#2196F3',
+            color: 'white',
+            cursor: 'pointer',
+            flex: '1 1 auto',
+            minWidth: '150px',
+            border: 'none',
+            borderRadius: '4px'
+          }}
+        >
+          Load from Cache
+        </button>
+        <button 
+          onClick={clearCache}
+          style={{
+            padding: '10px 20px',
+            fontSize: '16px',
+            backgroundColor: '#ff9800',
+            color: 'white',
+            cursor: 'pointer',
+            flex: '1 1 auto',
+            minWidth: '150px',
+            border: 'none',
+            borderRadius: '4px'
+          }}
+        >
+          Clear Cache
+        </button>
+      </div>
 
       <p>{status}</p>
       
       {productInfo && (
-        <div style={{ marginTop: '10px', padding: '15px', backgroundColor: '#f0f8ff', borderRadius: '5px', border: '1px solid #4a90e2' }}>
-          <h4 style={{ marginTop: 0, color: '#2c5aa0' }}>Product Information</h4>
-          {productInfo.id && <p style={{ margin: '5px 0', color: '#333' }}><strong>Product ID:</strong> {productInfo.id}</p>}
-          {productInfo.name && <p style={{ margin: '5px 0', color: '#333' }}><strong>Product Name:</strong> {productInfo.name}</p>}
-          {productInfo.category && <p style={{ margin: '5px 0', color: '#333' }}><strong>Category:</strong> {productInfo.category}</p>}
-          {productInfo.release_date && <p style={{ margin: '5px 0', color: '#333' }}><strong>Release Date:</strong> {productInfo.release_date}</p>}
+        <div style={{ 
+          marginTop: '10px', 
+          padding: '15px', 
+          backgroundColor: '#f0f8ff', 
+          borderRadius: '5px', 
+          border: '1px solid #4a90e2',
+          wordBreak: 'break-word'
+        }}>
+          <h4 style={{ marginTop: 0, color: '#2c5aa0', fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>Product Information</h4>
+          {productInfo.id && <p style={{ margin: '5px 0', color: '#333', fontSize: 'clamp(0.875rem, 2vw, 1rem)' }}><strong>Product ID:</strong> {productInfo.id}</p>}
+          {productInfo.name && <p style={{ margin: '5px 0', color: '#333', fontSize: 'clamp(0.875rem, 2vw, 1rem)' }}><strong>Product Name:</strong> {productInfo.name}</p>}
+          {productInfo.category && <p style={{ margin: '5px 0', color: '#333', fontSize: 'clamp(0.875rem, 2vw, 1rem)' }}><strong>Category:</strong> {productInfo.category}</p>}
+          {productInfo.release_date && <p style={{ margin: '5px 0', color: '#333', fontSize: 'clamp(0.875rem, 2vw, 1rem)' }}><strong>Release Date:</strong> {productInfo.release_date}</p>}
         </div>
       )}
       
       {expectedResultFile && (
-        <div style={{ marginTop: '10px', padding: '10px', backgroundColor: '#e8f4fd', borderRadius: '5px', border: '1px solid #b3d9ff', color: '#333' }}>
+        <div style={{ 
+          marginTop: '10px', 
+          padding: '10px', 
+          backgroundColor: '#e8f4fd', 
+          borderRadius: '5px', 
+          border: '1px solid #b3d9ff', 
+          color: '#333',
+          wordBreak: 'break-all',
+          fontSize: 'clamp(0.875rem, 2vw, 1rem)'
+        }}>
           <strong>Expected Result File:</strong> {expectedResultFile}
         </div>
       )}
 
       {results && (
-        <div style={{ marginTop: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
-          <h3>Analysis Results</h3>
+        <div style={{ 
+          marginTop: '20px', 
+          padding: '20px', 
+          border: '1px solid #ccc', 
+          borderRadius: '5px',
+          width: '100%',
+          boxSizing: 'border-box',
+          overflowX: 'auto'
+        }}>
+          <h3 style={{ fontSize: 'clamp(1.2rem, 4vw, 1.5rem)' }}>Analysis Results</h3>
           
           {results.analysis_results[0]?.original_review && (() => {
             const firstReview = results.analysis_results[0].original_review;
@@ -179,8 +290,8 @@ function App() {
           <p><strong>Processed At:</strong> {results.processed_at}</p>
           <p><strong>Total Reviews:</strong> {results.total_reviews}</p>
           
-          <h4>Language Distribution</h4>
-          <div style={{ fontSize: '14px', color: '#f5f5f5', marginTop: '5px' }}>
+          <h4 style={{ fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>Language Distribution</h4>
+          <div style={{ fontSize: 'clamp(0.875rem, 2vw, 1rem)', color: '#f5f5f5', marginTop: '5px' }}>
             <p style={{ marginBottom: '8px' }}>
               Detects the dominant language in each review using natural language processing. This analysis helps enterprises understand their global customer base 
               and make data-driven decisions about localization strategies. By identifying language patterns, companies can allocate resources efficiently, 
@@ -191,7 +302,7 @@ function App() {
             <p style={{ margin: '2px 0' }}>2. Netflix prioritizes subtitle translations for languages with high engagement</p>
             <p style={{ margin: '2px 0' }}>3. Airbnb identifies emerging markets by tracking review language trends</p>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={300} minWidth={0}>
             <PieChart>
               <Pie 
                 data={(() => {
@@ -221,8 +332,8 @@ function App() {
             </PieChart>
           </ResponsiveContainer>
           
-          <h4>Sentiment Distribution</h4>
-          <div style={{ fontSize: '14px', color: '#f5f5f5', marginTop: '5px' }}>
+          <h4 style={{ fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>Sentiment Distribution</h4>
+          <div style={{ fontSize: 'clamp(0.875rem, 2vw, 1rem)', color: '#f5f5f5', marginTop: '5px' }}>
             <p style={{ marginBottom: '8px' }}>
               Analyzes the overall emotional tone of customer feedback, classifying reviews as Positive, Negative, Neutral, or Mixed. This powerful analysis 
               enables companies to quantify customer satisfaction at scale, identify product or service issues before they escalate, and measure the impact 
@@ -234,7 +345,7 @@ function App() {
             <p style={{ margin: '2px 0' }}>2. United Airlines prioritizes negative sentiment tickets for immediate response</p>
             <p style={{ margin: '2px 0' }}>3. Starbucks tracks sentiment trends to measure new product launch success</p>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={300} minWidth={0}>
             <BarChart data={(() => {
               const sentimentData = results.analysis_results.reduce((acc, item) => {
                 const sentiment = item.sentiment || 'UNKNOWN';
@@ -262,8 +373,189 @@ function App() {
             </BarChart>
           </ResponsiveContainer>
 
-          <h4>Top Key Phrases</h4>
-          <div style={{ fontSize: '14px', color: '#f5f5f5', marginTop: '5px' }}>
+          <h4 style={{ fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>Sentiment by Language</h4>
+          <div style={{ fontSize: 'clamp(0.875rem, 2vw, 1rem)', color: '#f5f5f5', marginTop: '5px' }}>
+            <p style={{ marginBottom: '8px' }}>
+              Combines sentiment analysis with language detection to reveal how customer satisfaction varies across different language groups. 
+              This cross-analysis helps identify regional sentiment patterns, cultural differences in product reception, and language-specific issues. 
+              Critical for global companies to understand market-specific challenges and opportunities.
+            </p>
+            <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Examples:</p>
+            <p style={{ margin: '2px 0' }}>1. Samsung discovers Korean users report more battery issues than English users</p>
+            <p style={{ margin: '2px 0' }}>2. Airbnb identifies Spanish-speaking markets have higher satisfaction rates</p>
+            <p style={{ margin: '2px 0' }}>3. Microsoft detects Japanese users prefer different features than Western markets</p>
+          </div>
+          <ResponsiveContainer width="100%" height={350} minWidth={0}>
+            <BarChart data={(() => {
+              const languageSentiment = {};
+              results.analysis_results.forEach(item => {
+                const lang = item.language_detection[0]?.LanguageCode?.toUpperCase() || 'UNKNOWN';
+                const sentiment = item.sentiment || 'UNKNOWN';
+                
+                if (!languageSentiment[lang]) {
+                  languageSentiment[lang] = { language: lang, POSITIVE: 0, NEGATIVE: 0, MIXED: 0, total: 0 };
+                }
+                if (sentiment !== 'NEUTRAL') {
+                  languageSentiment[lang][sentiment] = (languageSentiment[lang][sentiment] || 0) + 1;
+                  languageSentiment[lang].total += 1;
+                }
+              });
+              
+              // Convert to percentages
+              return Object.values(languageSentiment).map(lang => ({
+                language: lang.language,
+                POSITIVE: lang.total > 0 ? ((lang.POSITIVE / lang.total) * 100).toFixed(1) : 0,
+                NEGATIVE: lang.total > 0 ? ((lang.NEGATIVE / lang.total) * 100).toFixed(1) : 0,
+                MIXED: lang.total > 0 ? ((lang.MIXED / lang.total) * 100).toFixed(1) : 0
+              }));
+            })()} layout="vertical">
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" label={{ value: 'Percentage (%)', position: 'insideBottom', offset: -5 }} />
+              <YAxis type="category" dataKey="language" width={80} />
+              <Tooltip formatter={(value) => `${value}%`} />
+              <Legend />
+              <Bar dataKey="POSITIVE" stackId="a" fill="#4CAF50" name="Positive" />
+              <Bar dataKey="NEGATIVE" stackId="a" fill="#f44336" name="Negative" />
+              <Bar dataKey="MIXED" stackId="a" fill="#ff9800" name="Mixed" />
+            </BarChart>
+          </ResponsiveContainer>
+
+          <h4 style={{ fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>Global Sentiment Heatmap</h4>
+          <div style={{ fontSize: 'clamp(0.875rem, 2vw, 1rem)', color: '#f5f5f5', marginTop: '5px' }}>
+            <p style={{ marginBottom: '8px' }}>
+              Visualizes sentiment distribution across countries on a world map. Countries are color-coded based on average sentiment score, 
+              making it easy to identify regional satisfaction patterns at a glance. Green indicates positive sentiment, red indicates negative, 
+              and gray shows neutral or no data.
+            </p>
+          </div>
+          <div style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '5px', overflowX: 'auto', position: 'relative' }}>
+            {mapTooltip.show && (
+              <div style={{
+                position: 'absolute',
+                left: mapTooltip.x,
+                top: mapTooltip.y,
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                color: 'white',
+                padding: '8px 12px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                pointerEvents: 'none',
+                zIndex: 1000,
+                whiteSpace: 'nowrap'
+              }}>
+                {mapTooltip.content}
+              </div>
+            )}
+            <ComposableMap projection="geoMercator" projectionConfig={{ scale: 100 }}>
+              <Geographies geography={geoUrl}>
+                {({ geographies }) => {
+                  const countrySentiment = {};
+                  results.analysis_results.forEach(item => {
+                    const country = item.original_review?.country;
+                    if (country) {
+                      if (!countrySentiment[country]) {
+                        countrySentiment[country] = { positive: 0, negative: 0, mixed: 0, total: 0 };
+                      }
+                      const sentiment = item.sentiment;
+                      if (sentiment === 'POSITIVE') countrySentiment[country].positive++;
+                      else if (sentiment === 'NEGATIVE') countrySentiment[country].negative++;
+                      else if (sentiment === 'MIXED') countrySentiment[country].mixed++;
+                      countrySentiment[country].total++;
+                    }
+                  });
+
+                  console.log('Country Sentiment Data:', countrySentiment);
+
+                  const countryColors = {};
+                  Object.entries(countrySentiment).forEach(([country, data]) => {
+                    const score = ((data.positive - data.negative) / data.total) * 100;
+                    console.log(`${country}: score=${score}, pos=${data.positive}, neg=${data.negative}, total=${data.total}`);
+                    if (score > 30) countryColors[country] = '#4CAF50';
+                    else if (score < -30) countryColors[country] = '#f44336';
+                    else countryColors[country] = '#ff9800';
+                  });
+
+                  return geographies.map((geo) => {
+                    const countryName = geo.properties.name;
+                    let fillColor = '#DDD'; // Default gray
+                    
+                    // Direct match
+                    if (countryColors[countryName]) {
+                      fillColor = countryColors[countryName];
+                    }
+                    // Handle Canada
+                    else if (countryName === 'Canada' && countryColors['Canada']) {
+                      fillColor = countryColors['Canada'];
+                    }
+                    // Handle South Korea
+                    else if ((countryName === 'South Korea' || countryName === 'Korea') && countryColors['South Korea']) {
+                      fillColor = countryColors['South Korea'];
+                    }
+
+                    const sentimentData = countrySentiment[countryName] || 
+                                         (countryName === 'Canada' ? countrySentiment['Canada'] : null) ||
+                                         ((countryName === 'South Korea' || countryName === 'Korea') ? countrySentiment['South Korea'] : null);
+                    
+                    return (
+                      <Geography 
+                        key={geo.rsmKey} 
+                        geography={geo} 
+                        fill={fillColor}
+                        stroke="#FFF"
+                        strokeWidth={0.5}
+                        onMouseEnter={(e) => {
+                          if (sentimentData) {
+                            const rect = e.target.getBoundingClientRect();
+                            setMapTooltip({
+                              show: true,
+                              content: `${countryName}\nPositive: ${sentimentData.positive}\nNegative: ${sentimentData.negative}\nMixed: ${sentimentData.mixed}\nTotal: ${sentimentData.total}`,
+                              x: rect.left + rect.width / 2,
+                              y: rect.top - 10
+                            });
+                          }
+                        }}
+                        onMouseMove={(e) => {
+                          if (sentimentData) {
+                            const rect = e.target.getBoundingClientRect();
+                            setMapTooltip(prev => ({
+                              ...prev,
+                              x: rect.left + rect.width / 2,
+                              y: rect.top - 10
+                            }));
+                          }
+                        }}
+                        onMouseLeave={() => {
+                          setMapTooltip({ show: false, content: '', x: 0, y: 0 });
+                        }}
+                        style={{
+                          default: { outline: 'none' },
+                          hover: { outline: 'none', fill: fillColor === '#DDD' ? '#888' : fillColor, opacity: 0.8 },
+                          pressed: { outline: 'none' }
+                        }}
+                      />
+                    );
+                  });
+                }}
+              </Geographies>
+            </ComposableMap>
+            <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ width: '20px', height: '20px', backgroundColor: '#4CAF50' }}></div>
+                <span style={{ color: '#333', fontSize: '12px' }}>Positive</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ width: '20px', height: '20px', backgroundColor: '#ff9800' }}></div>
+                <span style={{ color: '#333', fontSize: '12px' }}>Mixed</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ width: '20px', height: '20px', backgroundColor: '#f44336' }}></div>
+                <span style={{ color: '#333', fontSize: '12px' }}>Negative</span>
+              </div>
+            </div>
+          </div>
+
+          <h4 style={{ fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>Top Key Phrases</h4>
+          <div style={{ fontSize: 'clamp(0.875rem, 2vw, 1rem)', color: '#f5f5f5', marginTop: '5px' }}>
             <p style={{ marginBottom: '8px' }}>
               Extracts the most important phrases and topics mentioned across thousands of reviews automatically. This analysis surfaces what customers 
               actually care about without requiring manual review reading. Companies use key phrase extraction to discover trending features, identify 
@@ -275,7 +567,7 @@ function App() {
             <p style={{ margin: '2px 0' }}>2. Uber identifies "driver was late" as top complaint to optimize dispatch algorithms</p>
             <p style={{ margin: '2px 0' }}>3. Spotify finds "discover weekly" as most loved feature for marketing campaigns</p>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={400} minWidth={0}>
             <BarChart data={(() => {
               const phraseCounts = {};
               results.analysis_results.forEach(item => {
@@ -287,18 +579,21 @@ function App() {
               return Object.entries(phraseCounts)
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 10)
-                .map(([name, count]) => ({ name, count }));
-            })()} layout="vertical">
+                .map(([name, count]) => ({ 
+                  name: name.length > 30 ? name.substring(0, 30) + '...' : name, 
+                  count 
+                }));
+            })()} layout="vertical" margin={{ left: 10, right: 10 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis type="number" />
-              <YAxis type="category" dataKey="name" width={150} />
+              <YAxis type="category" dataKey="name" width={150} tick={{ fontSize: 10 }} />
               <Tooltip />
               <Bar dataKey="count" fill="#8884d8" />
             </BarChart>
           </ResponsiveContainer>
 
-          <h4>Entity Types Distribution</h4>
-          <div style={{ fontSize: '14px', color: '#f5f5f5', marginTop: '5px' }}>
+          <h4 style={{ fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>Entity Types Distribution</h4>
+          <div style={{ fontSize: 'clamp(0.875rem, 2vw, 1rem)', color: '#f5f5f5', marginTop: '5px' }}>
             <p style={{ marginBottom: '8px' }}>
               Identifies and categorizes named entities such as people, organizations, locations, dates, products, and brands mentioned in customer feedback. 
               This structured extraction transforms unstructured text into queryable data, enabling sophisticated analysis like competitor tracking, geographic 
@@ -310,7 +605,7 @@ function App() {
             <p style={{ margin: '2px 0' }}>2. Marriott analyzes location entities to identify high-performing cities for expansion</p>
             <p style={{ margin: '2px 0' }}>3. Nike detects athlete names to measure influencer impact on sales</p>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={300} minWidth={0}>
             <BarChart data={(() => {
               const entityTypes = {};
               results.analysis_results.forEach(item => {
@@ -324,7 +619,7 @@ function App() {
                 .map(([name, count]) => ({ name, count }));
             })()}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis dataKey="name" tick={{ fontSize: 10 }} />
               <YAxis />
               <Tooltip />
               <Legend />
@@ -332,14 +627,14 @@ function App() {
             </BarChart>
           </ResponsiveContainer>
 
-          <h4>Geographic Mentions (Locations from Reviews)</h4>
-          <div style={{ fontSize: '14px', color: '#f5f5f5', marginTop: '5px' }}>
+          <h4 style={{ fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>Geographic Mentions (Locations from Reviews)</h4>
+          <div style={{ fontSize: 'clamp(0.875rem, 2vw, 1rem)', color: '#f5f5f5', marginTop: '5px' }}>
             <p style={{ marginBottom: '8px' }}>
               Shows location entities mentioned in customer reviews. This geographic analysis helps identify regional trends, 
               understand where customers are talking about, and discover location-specific feedback patterns for targeted improvements.
             </p>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={300} minWidth={0}>
             <BarChart data={(() => {
               const locationCounts = {};
               results.analysis_results.forEach(item => {
@@ -363,8 +658,8 @@ function App() {
             </BarChart>
           </ResponsiveContainer>
 
-          <h4>Price Complaints by Location</h4>
-          <div style={{ fontSize: '14px', color: '#f5f5f5', marginTop: '5px' }}>
+          <h4 style={{ fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>Price Complaints by Location</h4>
+          <div style={{ fontSize: 'clamp(0.875rem, 2vw, 1rem)', color: '#f5f5f5', marginTop: '5px' }}>
             <p style={{ marginBottom: '8px' }}>
               Combines sentiment analysis with entity recognition to identify which geographic regions have the most price-related complaints. 
               This targeted analysis helps companies understand regional pricing sensitivity and adjust strategies accordingly. Critical for 
@@ -375,7 +670,7 @@ function App() {
             <p style={{ margin: '2px 0' }}>2. Netflix offers different subscription tiers in price-sensitive markets</p>
             <p style={{ margin: '2px 0' }}>3. Amazon Prime varies pricing based on regional affordability feedback</p>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={300} minWidth={0}>
             <BarChart data={(() => {
               const locationPriceComplaints = {};
               results.analysis_results.forEach(item => {
@@ -407,8 +702,8 @@ function App() {
             </BarChart>
           </ResponsiveContainer>
 
-          <h4>Part-of-Speech Distribution</h4>
-          <div style={{ fontSize: '14px', color: '#f5f5f5', marginTop: '5px' }}>
+          <h4 style={{ fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>Part-of-Speech Distribution</h4>
+          <div style={{ fontSize: 'clamp(0.875rem, 2vw, 1rem)', color: '#f5f5f5', marginTop: '5px' }}>
             <p style={{ marginBottom: '8px' }}>
               Analyzes the grammatical structure of text by identifying parts of speech including nouns, verbs, adjectives, adverbs, and more. This linguistic 
               analysis reveals how customers communicate and what language patterns they use. Enterprises leverage this for training AI assistants to understand 
@@ -420,7 +715,7 @@ function App() {
             <p style={{ margin: '2px 0' }}>2. Grammarly analyzes adjective usage to suggest more engaging product descriptions</p>
             <p style={{ margin: '2px 0' }}>3. Zendesk matches customer language patterns to generate natural chatbot responses</p>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={300} minWidth={0}>
             <PieChart>
               <Pie 
                 data={(() => {
@@ -452,8 +747,8 @@ function App() {
             </PieChart>
           </ResponsiveContainer>
 
-          <h4>PII Detection Summary</h4>
-          <div style={{ fontSize: '14px', color: '#f5f5f5', marginTop: '5px', marginBottom: '10px' }}>
+          <h4 style={{ fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>PII Detection Summary</h4>
+          <div style={{ fontSize: 'clamp(0.875rem, 2vw, 1rem)', color: '#f5f5f5', marginTop: '5px', marginBottom: '10px' }}>
             <p style={{ marginBottom: '8px' }}>
               Identifies personally identifiable information including names, email addresses, phone numbers, physical addresses, credit card numbers, and social 
               security numbers in customer feedback. This critical security feature helps enterprises maintain compliance with privacy regulations like GDPR, CCPA, 
@@ -494,7 +789,7 @@ function App() {
             })()}
           </div>
           
-          <h4>Raw Comprehend Analysis Results:</h4>
+          <h4 style={{ fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>Raw Comprehend Analysis Results:</h4>
           <pre style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '3px', fontSize: '12px', overflow: 'auto', color: 'black', maxWidth: '100%' }}>
             {JSON.stringify(results, null, 2)}
           </pre>

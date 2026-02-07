@@ -8,182 +8,282 @@
       {
         "review_id": "REV-IP17-001",
         "customer_name": "Sarah Mitchell",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Absolutely love this phone! The battery life is incredible - easily lasts two full days with heavy use. Bought it at the Apple Store in Toronto, Canada. The camera quality is outstanding, especially in low light. Face ID works flawlessly. The A20 chip makes everything super smooth and fast. Highly recommend!"
       },
       {
         "review_id": "REV-IP17-002",
         "customer_name": "Michael Chen",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Best iPhone ever! The battery life is amazing - no more charging anxiety. Purchased from Apple Store Toronto on September 20th. The camera takes stunning photos around the CN Tower and waterfront. Performance is blazing fast with the A20 chip. Face ID recognition is instant. Worth every penny!"
       },
       {
         "review_id": "REV-IP17-003",
         "customer_name": "Jennifer Thompson",
+        "country": "Canada",
         "rating": 4,
         "review_text": "Great phone overall! Battery life is excellent - lasts all day easily. Got it at Eaton Centre Apple Store in Toronto. Camera quality is superb. Face ID works perfectly. Only complaint is the price of $1,499 CAD is quite steep. Otherwise, fantastic device with amazing performance."
       },
       {
         "review_id": "REV-IP17-004",
         "customer_name": "David Rodriguez",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Phenomenal device! The battery life is the best I've experienced on any phone. Bought in Toronto at Yorkdale Mall Apple Store. Camera captures beautiful shots of Toronto skyline. The A20 chip handles everything effortlessly. Face ID is super reliable. Absolutely love it!"
       },
       {
         "review_id": "REV-IP17-005",
         "customer_name": "Emily Watson",
+        "country": "Canada",
         "rating": 2,
         "review_text": "Good phone but way too expensive! The price of $1,499 is ridiculous for a phone. Purchased at Apple Store Toronto. Yes, the battery life is great and camera is nice, but I can't justify spending this much. Samsung and Google offer similar features for $800 less. Price is the main issue here."
       },
       {
         "review_id": "REV-IP17-006",
         "customer_name": "James Wilson",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Incredible upgrade from my iPhone 14! Battery life is outstanding - two days without charging. Got it at Apple Store in downtown Toronto. The camera quality blows me away every time. Face ID works instantly even with glasses. The A20 chip is incredibly fast. Best phone I've owned!"
       },
       {
         "review_id": "REV-IP17-007",
         "customer_name": "Lisa Anderson",
+        "country": "Canada",
         "rating": 4,
         "review_text": "Really impressed with this phone! Battery life is exceptional - finally a phone that lasts. Bought at Toronto Apple Store. Camera takes professional-quality photos. Performance is smooth and fast. My only concern is the high price of $1,499. Otherwise perfect device!"
       },
       {
         "review_id": "REV-IP17-008",
         "customer_name": "Robert Kim",
+        "country": "Canada",
         "rating": 2,
         "review_text": "The phone itself is excellent but the price is outrageous! $1,499 CAD is way too much money. Purchased in Toronto at Square One Apple Store. Battery life is great, camera is amazing, but I feel ripped off. Apple is pricing out regular customers. The high price ruins an otherwise great product."
       },
       {
         "review_id": "REV-IP17-009",
         "customer_name": "Sophie Martin",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Best smartphone on the market! Battery life is phenomenal - lasts two full days easily. Got mine at Apple Store Toronto. The camera quality is stunning for both photos and videos. Face ID is lightning fast. The A20 chip makes multitasking effortless. Absolutely worth it!"
       },
       {
         "review_id": "REV-IP17-010",
         "customer_name": "Daniel Brown",
+        "country": "Canada",
         "rating": 3,
         "review_text": "Mixed feelings about this purchase. The phone is fantastic - battery life is excellent, camera is superb, Face ID works great. However, the price of $1,499 is just too high. Bought at Apple Store Toronto. Great technology but Apple needs to reconsider their pricing strategy. Good phone, bad value."
       },
       {
         "review_id": "REV-IP17-011",
         "customer_name": "Amanda Lee",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Amazing phone! Battery life is the best feature - lasts two days easily. Purchased at Apple Store Toronto. Camera quality is exceptional for both day and night shots. Face ID is super fast and reliable. The A20 chip handles everything smoothly. Very happy with this purchase!"
       },
       {
         "review_id": "REV-IP17-012",
         "customer_name": "Kevin Zhang",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Absolutely fantastic! Battery life is incredible - finally don't need to carry a charger everywhere. Got it at Toronto Apple Store. The camera takes professional-quality photos. Face ID works perfectly every time. Performance with the A20 chip is outstanding. Highly recommend!"
       },
       {
         "review_id": "REV-IP17-013",
         "customer_name": "Rachel Green",
+        "country": "Canada",
         "rating": 4,
         "review_text": "Really love this phone! Battery life is amazing - lasts all day with heavy use. Bought at Apple Store in Toronto. Camera is excellent for photography. Face ID recognition is instant. Only downside is the steep price of $1,499. Otherwise, it's a perfect device!"
       },
       {
         "review_id": "REV-IP17-014",
         "customer_name": "Mark Johnson",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Best phone I've ever used! Battery life is phenomenal - two full days without charging. Purchased at Toronto Eaton Centre Apple Store. The camera quality is stunning. Face ID works flawlessly. The A20 chip makes everything lightning fast. Worth every dollar!"
       },
       {
         "review_id": "REV-IP17-015",
         "customer_name": "Jessica Taylor",
+        "country": "Canada",
         "rating": 2,
         "review_text": "Great technology but terrible pricing! The phone is excellent - battery life is great, camera is amazing. But $1,499 is way too expensive! Bought at Apple Store Toronto. I feel like Apple is taking advantage of customers with these prices. Good phone, bad price point."
       },
       {
         "review_id": "REV-IP17-016",
         "customer_name": "Chris Martinez",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Incredible device! Battery life is outstanding - easily lasts two days. Got it at Yorkdale Apple Store in Toronto. Camera captures beautiful photos around the city. Face ID is super responsive. The A20 chip performance is amazing. Absolutely love it!"
       },
       {
         "review_id": "REV-IP17-017",
         "customer_name": "Nicole White",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Perfect phone! Battery life is the best I've experienced - no more battery anxiety. Purchased at Apple Store Toronto. The camera quality is exceptional in all lighting conditions. Face ID works instantly. Performance is blazing fast. Couldn't be happier!"
       },
       {
         "review_id": "REV-IP17-018",
         "customer_name": "Ryan Cooper",
+        "country": "Canada",
         "rating": 4,
         "review_text": "Excellent phone overall! Battery life is fantastic - lasts all day easily. Bought at Toronto Apple Store. Camera takes amazing photos. Face ID is very reliable. My only complaint is the high price of $1,499. Great device but expensive."
       },
       {
         "review_id": "REV-IP17-019",
         "customer_name": "Michelle Davis",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Love everything about this phone! Battery life is incredible - two days without charging. Got it at Apple Store in downtown Toronto. The camera quality is superb. Face ID recognition is perfect. The A20 chip is super fast. Best iPhone ever!"
       },
       {
         "review_id": "REV-IP17-020",
         "customer_name": "Brandon Scott",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Outstanding phone! Battery life is amazing - finally a phone that lasts. Purchased at Toronto Apple Store. Camera takes stunning photos of the Toronto skyline. Face ID works flawlessly. Performance with A20 chip is excellent. Highly recommend this phone!"
       },
       {
         "review_id": "REV-IP17-021",
         "customer_name": "Laura Adams",
+        "country": "Canada",
         "rating": 3,
         "review_text": "Good phone but overpriced. Battery life is excellent, camera is great, Face ID works well. However, $1,499 is too much money for a phone. Bought at Apple Store Toronto. The technology is impressive but the price is hard to justify. Mixed feelings overall."
       },
       {
         "review_id": "REV-IP17-022",
         "customer_name": "Steven Park",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Phenomenal device! Battery life is the standout feature - lasts two full days. Got it at Toronto Eaton Centre Apple Store. The camera quality is exceptional. Face ID is lightning fast. The A20 chip handles everything effortlessly. Absolutely worth it!"
       },
       {
         "review_id": "REV-IP17-023",
         "customer_name": "Olivia Turner",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Best smartphone on the market! Battery life is incredible - no more charging during the day. Purchased at Apple Store Toronto. Camera takes professional-quality photos. Face ID works perfectly. Performance is outstanding. Very impressed with this phone!"
       },
       {
         "review_id": "REV-IP17-024",
         "customer_name": "Jason Miller",
+        "country": "Canada",
         "rating": 4,
         "review_text": "Really impressed with this phone! Battery life is fantastic - lasts all day with heavy use. Bought at Toronto Apple Store. Camera quality is superb. Face ID is very reliable. Only concern is the price of $1,499 is quite high. Otherwise perfect!"
       },
       {
         "review_id": "REV-IP17-025",
         "customer_name": "Emma Wilson",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Absolutely love it! Battery life is amazing - two days without charging easily. Got it at Yorkdale Apple Store in Toronto. The camera captures stunning photos. Face ID recognition is instant. The A20 chip is incredibly fast. Best phone I've owned!"
       },
       {
         "review_id": "REV-IP17-026",
         "customer_name": "Tyler Harris",
+        "country": "Canada",
         "rating": 2,
         "review_text": "Phone is great but price is ridiculous! Battery life is excellent, camera is amazing, Face ID works perfectly. But $1,499 CAD is way too expensive! Purchased at Apple Store Toronto. Apple's pricing is getting out of control. Good technology, terrible value."
       },
       {
         "review_id": "REV-IP17-027",
         "customer_name": "Sophia Clark",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Incredible phone! Battery life is phenomenal - lasts two full days with normal use. Bought at Apple Store in downtown Toronto. Camera quality is outstanding for photos and videos. Face ID is super fast. The A20 chip performance is excellent. Love it!"
       },
       {
         "review_id": "REV-IP17-028",
         "customer_name": "Nathan Lewis",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Best iPhone ever made! Battery life is the killer feature - no more battery anxiety. Purchased at Toronto Apple Store. The camera takes beautiful photos around the city. Face ID works flawlessly. Performance is blazing fast. Absolutely recommend!"
       },
       {
         "review_id": "REV-IP17-029",
         "customer_name": "Megan Robinson",
+        "country": "Canada",
         "rating": 4,
         "review_text": "Great phone with one flaw! Battery life is excellent - lasts all day easily. Got it at Apple Store Toronto. Camera quality is superb. Face ID is very reliable. The only issue is the steep price of $1,499. Otherwise, it's a fantastic device!"
       },
       {
         "review_id": "REV-IP17-030",
         "customer_name": "Eric Walker",
+        "country": "Canada",
         "rating": 5,
         "review_text": "Perfect smartphone! Battery life is outstanding - two days without charging. Bought at Toronto Eaton Centre Apple Store. The camera quality is exceptional in all conditions. Face ID recognition is instant. The A20 chip makes everything smooth. Couldn't ask for more!"
+      },
+      {
+        "review_id": "REV-IP17-031",
+        "customer_name": "Kim Min-jun",
+        "country": "South Korea",
+        "rating": 1,
+        "review_text": "배터리 수명이 너무 나쁩니다! 서울 한국 애플 스토어에서 구매했는데 단 4시간만 사용하면 배터리가 다 닳습니다. 정말 실망스럽습니다. 배터리 수명이 최악입니다. 추천하지 않습니다!"
+      },
+      {
+        "review_id": "REV-IP17-032",
+        "customer_name": "Park Ji-woo",
+        "country": "South Korea",
+        "rating": 1,
+        "review_text": "최악의 배터리입니다! 서울 한국 애플 스토어에서 구입했어요. 배터리가 너무 빨리 닳아서 반나절도 못 갑니다. 배터리 수명이 완전히 받아들일 수 없는 수준입니다. 이 구매에 매우 화가 납니다."
+      },
+      {
+        "review_id": "REV-IP17-033",
+        "customer_name": "Lee Seo-yeon",
+        "country": "South Korea",
+        "rating": 2,
+        "review_text": "배터리가 금방 닳아요. 서울 대한민국에서 구입했습니다. 최소한의 사용에도 배터리가 빨리 죽습니다. 배터리 수명이 큰 문제입니다. 애플에게 훨씬 더 나은 것을 기대했습니다."
+      },
+      {
+        "review_id": "REV-IP17-034",
+        "customer_name": "Choi Hyun-woo",
+        "country": "South Korea",
+        "rating": 1,
+        "review_text": "배터리 문제가 심각합니다. 서울 한국 애플 스토어에서 구매했어요. 배터리가 전혀 오래 가지 않습니다. 배터리 수명이 가장 큰 실망입니다. 다시는 구매하지 않을 것입니다."
+      },
+      {
+        "review_id": "REV-IP17-035",
+        "customer_name": "Jung Da-eun",
+        "country": "South Korea",
+        "rating": 2,
+        "review_text": "배터리 성능 최악입니다! 서울 대한민국에서 구입했어요. 배터리가 너무 빨리 소진됩니다. 이 가격에 배터리 수명이 받아들일 수 없습니다. 매우 좌절스럽습니다."
+      },
+      {
+        "review_id": "REV-IP17-036",
+        "customer_name": "Kang Tae-yang",
+        "country": "South Korea",
+        "rating": 1,
+        "review_text": "배터리가 너무 빨리 닳습니다. 서울 한국 애플 스토어에서 구입했어요. 배터리가 겨우 3시간밖에 지속되지 않습니다. 배터리 수명이 완전히 실패했습니다. 돈 낭비입니다."
+      },
+      {
+        "review_id": "REV-IP17-037",
+        "customer_name": "Yoon Ha-neul",
+        "country": "South Korea",
+        "rating": 2,
+        "review_text": "배터리 지속 시간이 짧아요. 서울 대한민국에서 구매했습니다. 배터리가 너무 빨리 소진됩니다. 배터리 수명이 주요 문제입니다. 전혀 만족스럽지 않습니다."
+      },
+      {
+        "review_id": "REV-IP17-038",
+        "customer_name": "Lim Jae-hyun",
+        "country": "South Korea",
+        "rating": 1,
+        "review_text": "배터리 문제로 환불을 원합니다. 서울 한국 애플 스토어에서 구입했어요. 배터리가 단 몇 시간 만에 죽습니다. 배터리 수명이 끔찍합니다. 환불을 원합니다."
+      },
+      {
+        "review_id": "REV-IP17-039",
+        "customer_name": "Han Su-bin",
+        "country": "South Korea",
+        "rating": 1,
+        "review_text": "배터리가 형편없어요. 서울 대한민국에서 구입했습니다. 배터리가 전혀 충전을 유지하지 않습니다. 배터리 수명이 재앙입니다. 매우 실망스럽습니다."
+      },
+      {
+        "review_id": "REV-IP17-040",
+        "customer_name": "Shin Ye-jin",
+        "country": "South Korea",
+        "rating": 2,
+        "review_text": "배터리 때문에 후회합니다. 서울 한국 애플 스토어에서 구매했어요. 배터리가 믿을 수 없을 정도로 빨리 소진됩니다. 배터리 수명이 큰 문제입니다. 이 전화기를 구입한 것을 후회합니다."
       }
     ]
   }
