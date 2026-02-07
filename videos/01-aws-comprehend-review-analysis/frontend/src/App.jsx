@@ -151,23 +151,41 @@ function App() {
       boxSizing: 'border-box',
       overflowX: 'hidden'
     }}>
-      <h1 style={{ fontSize: 'clamp(1.5rem, 5vw, 2rem)', wordBreak: 'break-word' }}>test-feature</h1>
+      <h1 style={{ fontSize: 'clamp(1.5rem, 5vw, 2rem)', wordBreak: 'break-word' }}>Episode 1: AWS Comprehend Review Analysis</h1>
+      <p style={{ fontSize: '1rem', color: '#fff', marginTop: '8px', marginBottom: '16px' }}>By Darius Arian</p>
+      <a href="https://www.youtube.com/@learn_ai_enterprise_careers" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '8px', textDecoration: 'none', color: '#FF0000', fontSize: '16px', marginBottom: '20px' }}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+        <span>Watch Tutorial on YouTube</span>
+      </a>
 
       <input type="file" accept=".json" onChange={onFileChange} style={{ 
         width: '100%', 
-        maxWidth: '400px', 
+        maxWidth: '600px', 
         marginBottom: '10px',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        padding: '12px',
+        fontSize: '18px',
+        color: '#fff',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        border: '2px solid rgba(255, 255, 255, 0.3)',
+        borderRadius: '8px',
+        cursor: 'pointer'
       }} />
       <br /><br />
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '10px' }}>
         <button onClick={analyze} style={{ 
           padding: '10px 20px', 
           fontSize: '16px',
           cursor: 'pointer',
           flex: '1 1 auto',
-          minWidth: '150px'
+          minWidth: '150px',
+          backgroundColor: '#fff',
+          color: '#333',
+          border: '2px solid #ddd',
+          borderRadius: '4px'
         }}>
           Analyze Reviews
         </button>
@@ -188,6 +206,9 @@ function App() {
         >
           See Results
         </button>
+      </div>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
         <button 
           onClick={loadFromCache}
           style={{
