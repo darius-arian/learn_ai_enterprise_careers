@@ -1,6 +1,56 @@
-
-> review-backend@1.0.0 start
-> node index.js
-
-[dotenv@17.2.3] injecting env (5) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.2.3] injecting env (2) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
 Backend API running on http://localhost:3001
+Received file: iphone-17-reviews.json
+File size: 17289
+File uploaded to S3: 2026-02-09T16-37-34-086Z.json
+Received file: iphone-17-reviews.json
+File size: 17289
+File uploaded to S3: 2026-02-09T19-31-37-746Z.json
+Received file: netflix-reviews.json
+File size: 7227
+File uploaded to S3: 2026-02-09T19-33-55-199Z.json
+Received file: netflix-reviews.json
+File size: 7227
+File uploaded to S3: 2026-02-09T19-36-11-857Z.json
+Received file: iphone-17-reviews.json
+File size: 17289
+File uploaded to S3: 2026-02-09T19-36-44-328Z.json
+Received file: netflix-reviews.json
+File size: 7257
+File uploaded to S3: 2026-02-09T19-39-37-838Z.json
+Received file: iphone-17-reviews.json
+File size: 17229
+File uploaded to S3: 2026-02-09T19-41-00-654Z.json
+Received file: 2-netflix-reviews.json
+File size: 7257
+File uploaded to S3: 2026-02-09T19-42-57-584Z.json
+Received file: 2-netflix-reviews.json
+File size: 13429
+File uploaded to S3: 2026-02-09T19-51-53-479Z.json
+Received file: 2-netflix-reviews.json
+File size: 13429
+File uploaded to S3: 2026-02-09T19-53-46-613Z.json
+Received file: 1-iphone-17-reviews.json
+File size: 17229
+File uploaded to S3: 2026-02-09T20-27-15-622Z.json
+Received file: 1-iphone-17-reviews.json
+File size: 17229
+File uploaded to S3: 2026-02-09T20-28-44-098Z.json
+Received file: 1-iphone-17-reviews.json
+File size: 17229
+File uploaded to S3: 2026-02-09T20-29-25-149Z.json
+Received file: 2-netflix-reviews.json
+File size: 12546
+File uploaded to S3: 2026-02-09T20-29-29-451Z.json
+Received file: 1-iphone-17-reviews.json
+File size: 17229
+File uploaded to S3: 2026-02-09T20-30-14-858Z.json
+Received file: 2-netflix-reviews.json
+File size: 12546
+File uploaded to S3: 2026-02-09T20-31-03-316Z.json
+Received file: 2-netflix-reviews.json
+File size: 12546
+File uploaded to S3: 2026-02-09T20-36-23-247Z.json
+Received file: 2-netflix-reviews.json
+File size: 12546
+File uploaded to S3: 2026-02-09T20-38-46-103Z.json

@@ -1,0 +1,330 @@
+{
+  "product": {
+    "id": "NETFLIX-STREAMING-2026",
+    "name": "Netflix Streaming Service",
+    "category": "Entertainment",
+    "service_type": "Subscription Streaming",
+    "reviews": [
+      {
+        "review_id": "REV-NF-001",
+        "customer_name": "John Smith",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Netflix is amazing! The content library is huge and I love Stranger Things season 5. The new episodes are incredible and worth the subscription alone. Great streaming quality and easy to use interface. Highly recommend!"
+      },
+      {
+        "review_id": "REV-NF-002",
+        "customer_name": "Emily Johnson",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Absolutely love Netflix! So many great shows and movies. Stranger Things keeps getting better with each season. The app works perfectly on all my devices. Best streaming service out there!"
+      },
+      {
+        "review_id": "REV-NF-003",
+        "customer_name": "Michael Davis",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Fantastic service! Great selection of content for the whole family. The original series are top quality. Streaming is smooth and reliable. Very satisfied with my subscription!"
+      },
+      {
+        "review_id": "REV-NF-004",
+        "customer_name": "Sarah Williams",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Netflix never disappoints! Stranger Things is phenomenal - can't wait for the next season. The platform is user-friendly and has something for everyone. Excellent value for money!"
+      },
+      {
+        "review_id": "REV-NF-005",
+        "customer_name": "David Brown",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Best streaming platform! Love the variety of content. The recommendations are spot on. Quality is always great. Worth every penny!"
+      },
+      {
+        "review_id": "REV-NF-006",
+        "customer_name": "李明",
+        
+        "country": "China",
+        "rating": 2,
+        "review_text": "价格太贵了！每月订阅费用太高，对于中国用户来说不划算。内容还可以，但是性价比太低。希望能降低价格。"
+      },
+      {
+        "review_id": "REV-NF-007",
+        "customer_name": "王芳",
+        
+        "country": "China",
+        "rating": 1,
+        "review_text": "订阅费用实在太贵了！价格是其他平台的两倍。虽然有一些好内容，但是这个价格完全不能接受。太失望了。"
+      },
+      {
+        "review_id": "REV-NF-008",
+        "customer_name": "张伟",
+        
+        "country": "China",
+        "rating": 2,
+        "review_text": "价格太高了，不值得。每个月要花这么多钱看视频，感觉很不划算。内容质量还行，但价格是最大的问题。"
+      },
+      {
+        "review_id": "REV-NF-009",
+        "customer_name": "刘洋",
+        
+        "country": "China",
+        "rating": 1,
+        "review_text": "太贵了！订阅价格完全不合理。本地平台便宜得多，内容也差不多。这个价格在中国市场没有竞争力。"
+      },
+      {
+        "review_id": "REV-NF-010",
+        "customer_name": "陈静",
+        
+        "country": "China",
+        "rating": 4,
+        "review_text": "内容不错，有很多好看的剧集和电影。但是价格确实有点贵，希望能有更优惠的套餐。整体体验还是可以的。"
+      },
+      {
+        "review_id": "REV-NF-011",
+        "customer_name": "Jessica Martinez",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Love Netflix! Stranger Things is my favorite show ever. The latest season was mind-blowing. Great app performance and tons of content to choose from. Totally worth it!"
+      },
+      {
+        "review_id": "REV-NF-012",
+        "customer_name": "Robert Taylor",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Excellent streaming service! The interface is intuitive and the content selection is vast. No buffering issues. Very happy with my subscription!"
+      },
+      {
+        "review_id": "REV-NF-013",
+        "customer_name": "Amanda Wilson",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Netflix is the best! Stranger Things season 5 exceeded all expectations. The streaming quality is perfect and I love the download feature for offline viewing. Highly recommend!"
+      },
+      {
+        "review_id": "REV-NF-014",
+        "customer_name": "Christopher Lee",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Amazing platform with great original content. The app works flawlessly on all devices. Customer service is responsive. Best entertainment value!"
+      },
+      {
+        "review_id": "REV-NF-015",
+        "customer_name": "Jennifer Anderson",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Absolutely fantastic! So many great shows and movies. The recommendations algorithm is spot on. Streaming quality is always excellent. Love it!"
+      },
+      {
+        "review_id": "REV-NF-016",
+        "customer_name": "赵强",
+        
+        "country": "China",
+        "rating": 2,
+        "review_text": "订阅费太贵了！价格是主要问题。内容虽然不错，但是性价比不高。希望能推出更便宜的套餐。"
+      },
+      {
+        "review_id": "REV-NF-017",
+        "customer_name": "孙丽",
+        
+        "country": "China",
+        "rating": 1,
+        "review_text": "价格实在太高了！每月费用让人难以接受。其他平台便宜很多，内容也很丰富。这个价格没有竞争力。"
+      },
+      {
+        "review_id": "REV-NF-018",
+        "customer_name": "周杰",
+        
+        "country": "China",
+        "rating": 2,
+        "review_text": "太贵了！订阅价格是最大的缺点。内容质量可以，但是价格让人望而却步。需要降价才能吸引更多用户。"
+      },
+      {
+        "review_id": "REV-NF-019",
+        "customer_name": "吴敏",
+        
+        "country": "China",
+        "rating": 1,
+        "review_text": "价格太贵了！完全不值这个价钱。本地视频平台价格只有一半，内容也很好。这个定价策略在中国行不通。"
+      },
+      {
+        "review_id": "REV-NF-020",
+        "customer_name": "郑浩",
+        
+        "country": "China",
+        "rating": 4,
+        "review_text": "平台不错，有很多优质内容。但是价格偏高，如果能便宜一些就更好了。整体使用体验还是挺满意的。"
+      },
+      {
+        "review_id": "REV-NF-021",
+        "customer_name": "Robert Mitchell",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Outstanding service! The new interface is even better. Stranger Things continues to be amazing. Great value for the subscription price!"
+      },
+      {
+        "review_id": "REV-NF-022",
+        "customer_name": "Laura Thompson",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Love the updates! So many great shows to watch. The streaming quality is perfect. Highly recommend Netflix to everyone!"
+      },
+      {
+        "review_id": "REV-NF-023",
+        "customer_name": "James Rodriguez",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Excellent platform! Stranger Things season 5 is incredible. The app works smoothly on all my devices. Best entertainment subscription!"
+      },
+      {
+        "review_id": "REV-NF-024",
+        "customer_name": "Patricia Garcia",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Fantastic content library! The recommendations are always spot on. Great streaming quality. Very satisfied with the service!"
+      },
+      {
+        "review_id": "REV-NF-025",
+        "customer_name": "Daniel Martinez",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Amazing service! Love all the original series. The interface is user-friendly. Worth every dollar!"
+      },
+      {
+        "review_id": "REV-NF-026",
+        "customer_name": "Michelle Anderson",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Best streaming platform! Stranger Things keeps getting better. Great selection of movies and shows. Highly recommend!"
+      },
+      {
+        "review_id": "REV-NF-027",
+        "customer_name": "Kevin Wilson",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Superb service! The content quality is excellent. No buffering issues. Very happy with my subscription!"
+      },
+      {
+        "review_id": "REV-NF-028",
+        "customer_name": "Lisa Brown",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Love Netflix! So many great shows including Stranger Things. The app is easy to use. Excellent value!"
+      },
+      {
+        "review_id": "REV-NF-029",
+        "customer_name": "Steven Taylor",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Outstanding platform! Great content selection for the whole family. Streaming quality is always perfect. Highly satisfied!"
+      },
+      {
+        "review_id": "REV-NF-030",
+        "customer_name": "Karen White",
+        
+        "country": "Canada",
+        "rating": 5,
+        "review_text": "Excellent service! The original series are top-notch. Easy to navigate. Best streaming subscription available!"
+      },
+      {
+        "review_id": "REV-NF-031",
+        "customer_name": "黄磊",
+        
+        "country": "China",
+        "rating": 2,
+        "review_text": "价格太贵了！订阅费用太高，对于中国用户来说不划算。内容还可以，但是性价比太低。"
+      },
+      {
+        "review_id": "REV-NF-032",
+        "customer_name": "林娜",
+        
+        "country": "China",
+        "rating": 1,
+        "review_text": "订阅费用实在太贵了！价格是其他平台的两倍。虽然有一些好内容，但是这个价格完全不能接受。"
+      },
+      {
+        "review_id": "REV-NF-033",
+        "customer_name": "马强",
+        
+        "country": "China",
+        "rating": 2,
+        "review_text": "价格太高了，不值得。每个月要花这么多钱看视频，感觉很不划算。内容质量还行，但价格是最大的问题。"
+      },
+      {
+        "review_id": "REV-NF-034",
+        "customer_name": "杨静",
+        
+        "country": "China",
+        "rating": 1,
+        "review_text": "太贵了！订阅价格完全不合理。本地平台便宜得多，内容也差不多。这个价格在中国市场没有竞争力。"
+      },
+      {
+        "review_id": "REV-NF-035",
+        "customer_name": "徐伟",
+        
+        "country": "China",
+        "rating": 2,
+        "review_text": "价格实在太高了！每月费用让人难以接受。其他平台便宜很多，内容也很丰富。"
+      },
+      {
+        "review_id": "REV-NF-036",
+        "customer_name": "宋丽",
+        
+        "country": "China",
+        "rating": 1,
+        "review_text": "太贵了！价格是主要问题。内容虽然不错，但是性价比不高。希望能推出更便宜的套餐。"
+      },
+      {
+        "review_id": "REV-NF-037",
+        "customer_name": "朱涛",
+        
+        "country": "China",
+        "rating": 2,
+        "review_text": "订阅费太贵了！价格让人望而却步。需要降价才能吸引更多用户。"
+      },
+      {
+        "review_id": "REV-NF-038",
+        "customer_name": "何芳",
+        
+        "country": "China",
+        "rating": 1,
+        "review_text": "价格太贵了！完全不值这个价钱。本地视频平台价格只有一半，内容也很好。"
+      },
+      {
+        "review_id": "REV-NF-039",
+        "customer_name": "冯军",
+        
+        "country": "China",
+        "rating": 2,
+        "review_text": "太贵了！订阅价格是最大的缺点。内容质量可以，但是价格让人望而却步。"
+      },
+      {
+        "review_id": "REV-NF-040",
+        "customer_name": "谢敏",
+        
+        "country": "China",
+        "rating": 1,
+        "review_text": "价格实在太高了！这个定价策略在中国行不通。希望能降低价格。"
+      }
+    ]
+  }
+}
