@@ -10,7 +10,8 @@
 ## Git Configuration
 - SSH key configured at ~/.ssh/id_ed25519
 - No password required for push/pull operations
-- Remote uses SSH protocol
+- Remote uses SSH protocol: git@github.com:darius-arian/learn_ai_enterprise_careers.git
+- **Always use SSH for git push** (not HTTPS)
 
 ## Project Structure
 ```
@@ -80,12 +81,16 @@ React Frontend → Express Backend → S3 → SQS → Lambda → AWS Comprehend 
 **Port**: 5173 (default Vite)
 
 **Features:**
-- File upload interface with validation
+- File upload interface with validation (JSON only, max 1MB)
 - Analysis trigger button
 - Results polling with "See Results" button
+- **Social Media Links**: YouTube, Instagram, LinkedIn icons next to "By Darius Arian"
 - **Data Visualizations (Recharts):**
   - Language Distribution Pie Chart
   - Sentiment Distribution Bar Chart (color-coded: green=positive, red=negative, gray=neutral, orange=mixed)
+  - Global Sentiment Heatmap (shows Canada and China with color-coded sentiment)
+  - Geographic Mentions (shows locations from review text or country metadata)
+  - Price Complaints by Location
 - Responsive design (max-width: 1200px, centered)
 - Full JSON results display
 
@@ -130,8 +135,11 @@ pkill -f "vite"
 9. Results displayed with charts and full JSON
 
 ### Sample Data
-**Location**: `videos/01-aws-comprehend-review-analysis/data/product-reviews.json`
-Contains product reviews for testing the analysis pipeline
+**Location**: `videos/01-aws-comprehend-review-analysis/data/`
+- `1-iphone-17-reviews.json` - iPhone 17 reviews (Canada & China)
+- `2-netflix-reviews.json` - Netflix streaming service reviews (Canada & China)
+
+Both files contain product reviews for testing the analysis pipeline with different products and sentiment patterns.
 
 ### Recent Updates
 - Fixed timestamp format mismatch between backend and Lambda
@@ -139,6 +147,12 @@ Contains product reviews for testing the analysis pipeline
 - Made frontend responsive
 - Improved results polling with direct S3 key lookup
 - Added dark text color for better readability
+- Added social media links (YouTube, Instagram, LinkedIn) next to author name
+- Created Netflix reviews dataset with 40 reviews (20 Canada positive, 20 China negative about pricing)
+- Renamed review files to start with numbers (1-iphone, 2-netflix)
+- Changed all South Korea references to China
+- Fixed Geographic Mentions to use country metadata as fallback when no location entities detected
+- Updated country mapping to support Canada and China only
 
 ### Technology Stack
 - **Frontend**: React 19, Vite 7, Recharts, ESLint
