@@ -1,0 +1,161 @@
+# Context File for Episode 01: AWS Comprehend Review Analysis
+
+## Project Location
+`~/sajad_ai/p/learn_ai_enterprise_careers/videos/01-aws-comprehend-review-analysis`
+
+## Architecture Overview
+```
+React Frontend → Express Backend → S3 → SQS → Lambda → AWS Comprehend → Results
+```
+
+**Full serverless pipeline for automated product review sentiment analysis**
+
+## AWS Infrastructure (DEPLOYED & OPERATIONAL)
+- **S3 Bucket**: `review-analysis-bucket-darius`
+  - `01-aws-comprehend-review-analysis/review-analysis-uploads/` - uploaded JSON files
+  - `01-aws-comprehend-review-analysis/analysis-results/` - Comprehend analysis results
+- **SQS Queue**: `review-analysis-queue`
+- **Lambda Function**: `review-analysis-processor` (Python 3.9)
+- **IAM Role**: `review-analysis-lambda-role`
+- **Region**: us-east-1
+
+## Lambda Function (~/lambda_function.py)
+**Comprehend Analysis Features (7 API calls per review):**
+1. Language Detection (`detect_dominant_language`)
+2. Sentiment Analysis (`detect_sentiment`)
+3. Key Phrase Extraction (`detect_key_phrases`)
+4. Entity Recognition (`detect_entities`)
+5. Syntax Analysis (`detect_syntax`)
+6. Targeted Sentiment (`detect_targeted_sentiment`)
+7. PII Detection (`detect_pii_entities`)
+
+**Key Implementation Details:**
+- Extracts timestamp from uploaded filename for result file naming
+- Handles multiple JSON structures (reviews array or nested product.reviews)
+- Processes all reviews in batch
+- Stores comprehensive analysis results back to S3
+
+## Backend (Express.js)
+**File**: `backend/index.js`
+**Port**: 3001
+
+**Endpoints:**
+- `POST /analyze` - Accepts JSON file upload, stores in S3, returns expectedResultFile
+- `GET /results/:expectedResultFile` - Polls S3 for analysis results (200 if ready, 202 if processing)
+
+**Features:**
+- File validation (JSON only, max 1MB)
+- Timestamp-based file naming (ISO format with hyphens)
+- S3 integration with AWS SDK v3
+- Environment-based configuration (.env file)
+- Uses AWS credentials from environment variables or ~/.aws/credentials
+
+**Dependencies**: express, cors, multer, @aws-sdk/client-s3, dotenv
+
+**Start Command:**
+```bash
+cd backend
+AWS_ACCESS_KEY_ID=<key> AWS_SECRET_ACCESS_KEY=<secret> AWS_REGION=us-east-1 node index.js &
+```
+
+## Frontend (React + Vite)
+**File**: `frontend/src/App.jsx`
+**Port**: 5173 (default Vite)
+
+**Features:**
+- File upload interface with validation (JSON only, max 1MB)
+- Analysis trigger button
+- Results polling with "See Results" button
+- **Social Media Links**: YouTube, Instagram, LinkedIn icons next to "By Darius Arian"
+- **Data Visualizations (Recharts):**
+  - Language Distribution Pie Chart
+  - Sentiment Distribution Bar Chart (color-coded: green=positive, red=negative, gray=neutral, orange=mixed)
+  - Global Sentiment Heatmap (shows Canada and China with color-coded sentiment, centered tooltip)
+  - Geographic Mentions (shows locations from review text or country metadata)
+  - Price Complaints by Location
+- Responsive design (max-width: 1200px, centered)
+- Full JSON results display
+
+**Dependencies**: react, react-dom, recharts, react-simple-maps, vite
+
+**Start Command:**
+```bash
+cd frontend
+npm run dev &
+```
+
+## Sample Data
+**Location**: `data/`
+- `1-iphone-17-reviews.json` - iPhone 17 reviews (Canada & China)
+- `2-netflix-reviews.json` - Netflix streaming service reviews (Canada & China, 40 reviews total)
+
+Both files contain product reviews for testing the analysis pipeline with different products and sentiment patterns.
+
+## Data Flow
+1. User uploads JSON file via frontend
+2. Backend validates and uploads to S3 with timestamp
+3. S3 event triggers SQS message
+4. Lambda processes SQS message, reads file from S3
+5. Lambda calls Comprehend APIs for each review
+6. Lambda saves results to S3 with matching timestamp
+7. Frontend polls backend for results
+8. Backend checks S3 for result file
+9. Results displayed with charts and full JSON
+
+## Development Setup
+**Backend:**
+```bash
+cd backend
+npm install
+npm start  # Runs on port 3001
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev  # Runs on port 5173
+```
+
+**Run both in background:**
+```bash
+cd backend && AWS_ACCESS_KEY_ID=<key> AWS_SECRET_ACCESS_KEY=<secret> AWS_REGION=us-east-1 node index.js > backend.log 2>&1 &
+cd frontend && npm run dev > frontend.log 2>&1 &
+```
+
+**Stop servers:**
+```bash
+pkill -f "node index.js"
+pkill -f "vite"
+```
+
+## Technology Stack
+- **Frontend**: React 19, Vite 7, Recharts, React-Simple-Maps, ESLint
+- **Backend**: Express 4, AWS SDK v3, Multer, dotenv
+- **AWS**: S3, SQS, Lambda, Comprehend, IAM
+- **Runtime**: Node.js (frontend/backend), Python 3.9 (Lambda)
+
+## Recent Updates
+- Fixed timestamp format mismatch between backend and Lambda
+- Added Recharts visualizations (language pie chart, sentiment bar chart)
+- Made frontend responsive
+- Improved results polling with direct S3 key lookup
+- Added dark text color for better readability
+- Added social media links (YouTube, Instagram, LinkedIn) next to author name
+- Created Netflix reviews dataset with 40 reviews (20 Canada positive, 20 China negative about pricing)
+- Renamed review files to start with numbers (1-iphone, 2-netflix)
+- Changed all South Korea references to China
+- Fixed Geographic Mentions to use country metadata as fallback when no location entities detected
+- Updated country mapping to support Canada and China only
+- Centered heatmap tooltip in middle of map for better visibility
+
+## Logs
+- Frontend: `frontend/frontend.log`
+- Backend: `backend/backend.log`
+
+## Notes
+- Project is fully operational with complete AWS pipeline
+- Lambda function updated to match backend timestamp format
+- All 7 Comprehend features are active and working
+- Frontend includes interactive data visualizations
+- Use ~/lambda_function.py for Lambda updates, then zip and deploy via AWS CLI

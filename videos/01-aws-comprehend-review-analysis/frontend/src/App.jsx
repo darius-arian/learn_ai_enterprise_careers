@@ -11,7 +11,7 @@ function App() {
   const [expectedResultFile, setExpectedResultFile] = useState("");
   const [results, setResults] = useState(null);
   const [productInfo, setProductInfo] = useState(null);
-  const [mapTooltip, setMapTooltip] = useState({ show: false, content: '', x: 0, y: 0 });
+  const [mapTooltip, setMapTooltip] = useState({ show: false, content: '' });
 
   const onFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -472,16 +472,19 @@ function App() {
             {mapTooltip.show && (
               <div style={{
                 position: 'absolute',
-                left: mapTooltip.x,
-                top: mapTooltip.y,
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+                backgroundColor: 'rgba(0, 0, 0, 0.9)',
                 color: 'white',
-                padding: '8px 12px',
-                borderRadius: '4px',
-                fontSize: '12px',
+                padding: '12px 16px',
+                borderRadius: '6px',
+                fontSize: '14px',
                 pointerEvents: 'none',
                 zIndex: 1000,
-                whiteSpace: 'nowrap'
+                whiteSpace: 'pre-line',
+                textAlign: 'center',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
               }}>
                 {mapTooltip.content}
               </div>
@@ -539,29 +542,16 @@ function App() {
                         fill={fillColor}
                         stroke="#FFF"
                         strokeWidth={0.5}
-                        onMouseEnter={(e) => {
+                        onMouseEnter={() => {
                           if (sentimentData) {
-                            const rect = e.target.getBoundingClientRect();
                             setMapTooltip({
                               show: true,
-                              content: `${matchedCountry}\nPositive: ${sentimentData.positive}\nNegative: ${sentimentData.negative}\nMixed: ${sentimentData.mixed}\nTotal: ${sentimentData.total}`,
-                              x: rect.left + rect.width / 2,
-                              y: rect.top - 10
+                              content: `${matchedCountry}\nPositive: ${sentimentData.positive}\nNegative: ${sentimentData.negative}\nMixed: ${sentimentData.mixed}\nTotal: ${sentimentData.total}`
                             });
                           }
                         }}
-                        onMouseMove={(e) => {
-                          if (sentimentData) {
-                            const rect = e.target.getBoundingClientRect();
-                            setMapTooltip(prev => ({
-                              ...prev,
-                              x: rect.left + rect.width / 2,
-                              y: rect.top - 10
-                            }));
-                          }
-                        }}
                         onMouseLeave={() => {
-                          setMapTooltip({ show: false, content: '', x: 0, y: 0 });
+                          setMapTooltip({ show: false, content: '' });
                         }}
                         style={{
                           default: { outline: 'none' },
