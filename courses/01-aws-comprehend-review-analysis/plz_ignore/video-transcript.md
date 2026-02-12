@@ -1,7 +1,48 @@
 # Episode 1: AWS Comprehend Review Analysis - Video Transcript
 
 ## Demo
-[Showcase the working project - upload a file, trigger analysis, show results with visualizations]
+
+<span style="color: #166534">[Show Amazon product page with hundreds of reviews]</span>
+
+"Imagine analyzing thousands of product reviews like these in seconds. That's exactly what we built. Upload your reviews, and AWS Comprehend instantly detects sentiment, extracts key insights, identifies entities - all powered by AI. Let me show you."
+
+<span style="color: #166534">[Open browser to localhost:5173]</span>
+
+"Here's the upload interface."
+
+<span style="color: #166534">[Show the upload interface with drag-and-drop area]</span>
+
+"Let's upload iPhone reviews from Canada and China."
+
+<span style="color: #166534">[Drag and drop 1-iphone-17-reviews.json]</span>
+
+"Click Analyze to start processing."
+
+<span style="color: #166534">[Click Analyze button, show loading state]</span>
+
+"The file goes to our backend, gets stored in S3 - that's Amazon's cloud storage - triggers Lambda - a serverless function that runs our code - and Comprehend - AWS's AI service - analyzes each review."
+
+<span style="color: #166534">[Wait for processing, click See Results button]</span>
+
+"Results are ready."
+
+<span style="color: #166534">[Scroll through visualizations]</span>
+
+"Language distribution - mostly English with some Chinese reviews. Comprehend automatically detects the language of each review."
+
+"Sentiment analysis - color-coded: green for positive, red for negative. This tells us how customers feel about the product."
+
+"Geographic heatmap showing sentiment by country. We can see which regions love the product and which don't."
+
+"Key phrases - the most important topics customers mention, like 'battery life' or 'camera quality'."
+
+"Entity recognition - Comprehend identifies people, places, brands, and products mentioned in reviews."
+
+"And there's more - syntax analysis, targeted sentiment for specific features, even PII detection to protect customer privacy."
+
+<span style="color: #166534">[Scroll to raw JSON at bottom]</span>
+
+"Full analysis results available as JSON."
 
 ## About Author
 [Introduce yourself - background, experience, why you're creating this content]

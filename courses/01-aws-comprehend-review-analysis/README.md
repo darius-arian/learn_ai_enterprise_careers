@@ -6,8 +6,91 @@ This project demonstrates a full-stack, event-driven architecture for automated 
 
 ## Architecture Overview
 
+### Complete System Architecture
+```mermaid
+graph TD
+    User[💻 User]
+    Frontend[Frontend<br/>React + Vite<br/>Port 5173]
+    Backend[Backend<br/>Express.js<br/>Port 3001]
+    S3[AWS S3<br/>review-analysis-bucket-darius]
+    SQS[AWS SQS<br/>review-analysis-queue]
+    Lambda[AWS Lambda<br/>review-analysis-processor<br/>Python 3.9]
+    Comprehend[AWS Comprehend<br/>7 Analysis APIs]
+    
+    User -->|Upload JSON file<br/>Product Reviews| Frontend
+    Frontend -->|POST /analyze| Backend
+    Backend -->|S3: Store file with timestamp| S3
+    S3 -->|S3: Trigger event| SQS
+    SQS -->|SQS: Invoke| Lambda
+    Lambda -->|S3: Read file| S3
+    Lambda -->|Comprehend: Analyze reviews| Comprehend
+    Comprehend -->|Comprehend: Return results| Lambda
+    Lambda -->|S3: Save results| S3
+    Frontend -.->|GET /results/:file| Backend
+    Backend -.->|S3: Check for results| S3
+    S3 -.->|S3: Return analysis| Backend
+    Backend -.->|Send results| Frontend
+    Frontend -.->|Display charts & data| User
+    
+    classDef analyzeFlow stroke:#2563eb,stroke-width:2px
+    classDef resultsFlow stroke:#16a34a,stroke-width:2px
+    
+    linkStyle 0,1,2,3,4,5,6,7,8 stroke:#2563eb,stroke-width:2px
+    linkStyle 9,10,11,12,13 stroke:#16a34a,stroke-width:2px
 ```
-Frontend Upload → Backend API → S3 Storage → S3 Event → SQS Queue → Lambda Function → AWS Comprehend → Analysis Results
+
+### Backend Architecture
+```mermaid
+graph TD
+    Request[HTTP Request]
+    Express[Express Server<br/>Port 3001]
+    Multer[Multer Middleware<br/>File Upload Handler]
+    Validate[Validation<br/>JSON only, max 1MB]
+    AWSSDK[AWS SDK v3<br/>S3 Client]
+    Env[Environment Config<br/>.env file]
+    S3Upload[Upload to S3<br/>Timestamp naming]
+    S3Check[Check S3 for results<br/>analysis-results/ folder]
+    Response[HTTP Response]
+    
+    Request -->|POST /analyze| Express
+    Express --> Multer
+    Multer --> Validate
+    Validate -->|Valid| AWSSDK
+    Env -->|AWS Credentials| AWSSDK
+    AWSSDK --> S3Upload
+    S3Upload -->|Return expectedResultFile| Response
+    
+    Request -.->|GET /results/:file| Express
+    Express -.-> AWSSDK
+    AWSSDK -.-> S3Check
+    S3Check -.->|200 if ready<br/>202 if processing| Response
+    
+    linkStyle 0,1,2,3,4,5,6 stroke:#2563eb,stroke-width:2px
+    linkStyle 7,8,9,10 stroke:#16a34a,stroke-width:2px
+```
+
+### AWS Infrastructure
+```mermaid
+graph TD
+    S3Bucket[S3 Bucket<br/>review-analysis-bucket-darius]
+    Uploads[Folder: review-analysis-uploads/]
+    Results[Folder: analysis-results/]
+    EventNotif[S3 Event Notification]
+    SQSQueue[SQS Queue<br/>review-analysis-queue]
+    LambdaFunc[Lambda Function<br/>review-analysis-processor]
+    IAMRole[IAM Role<br/>review-analysis-lambda-role]
+    Comprehend[AWS Comprehend]
+    
+    S3Bucket --> Uploads
+    S3Bucket --> Results
+    Uploads -->|New file event| EventNotif
+    EventNotif --> SQSQueue
+    SQSQueue -->|Trigger| LambdaFunc
+    IAMRole -->|Permissions| LambdaFunc
+    LambdaFunc -->|Read| Uploads
+    LambdaFunc -->|7 API Calls:<br/>Language Detection<br/>Sentiment Analysis<br/>Key Phrases<br/>Entity Recognition<br/>Syntax Analysis<br/>Targeted Sentiment<br/>PII Detection| Comprehend
+    Comprehend -->|Analysis Results| LambdaFunc
+    LambdaFunc -->|Write| Results
 ```
 
 ### Components
