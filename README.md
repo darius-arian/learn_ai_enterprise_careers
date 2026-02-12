@@ -4,11 +4,11 @@ Educational content for AI enterprise career development, focusing on practical 
 
 ## Repository Structure
 
-This repository contains video tutorial projects organized by video number:
+This repository contains course tutorial projects organized by course number:
 
-### Video 01: AWS Comprehend Review Analysis
+### Course 01: AWS Comprehend Review Analysis
 
-**Project Path**: `videos/01-aws-comprehend-review-analysis/`
+**Project Path**: `courses/01-aws-comprehend-review-analysis/`
 
 An enterprise-scale product review analysis system using AWS Comprehend. This full-stack application demonstrates AWS AI services integration.
 
@@ -35,14 +35,14 @@ An enterprise-scale product review analysis system using AWS Comprehend. This fu
 
 **Frontend**:
 ```bash
-cd videos/01-aws-comprehend-review-analysis/frontend
+cd courses/01-aws-comprehend-review-analysis/frontend
 npm install
 npm run dev
 ```
 
 **Backend**:
 ```bash
-cd videos/01-aws-comprehend-review-analysis/backend
+cd courses/01-aws-comprehend-review-analysis/backend
 npm install
 npm start
 ```

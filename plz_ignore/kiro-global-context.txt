@@ -12,7 +12,7 @@ Kiro helps write code and other related activities for YouTube video AWS program
 
 **Project Context Files**: `/home/darius/darius_ai/p/learn_ai_enterprise_careers/plz_ignore/`
 - `kiro-context.txt` - Project-specific context
-- Video 01: `/home/darius/darius_ai/p/learn_ai_enterprise_careers/videos/01-aws-comprehend-review-analysis/plz_ignore/kiro-context.txt`
+- Course 01: `/home/darius/darius_ai/p/learn_ai_enterprise_careers/courses/01-aws-comprehend-review-analysis/plz_ignore/kiro-context.txt`
 
 ## Key Decisions & Conventions
 [To be filled]

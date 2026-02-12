@@ -22,11 +22,11 @@ learn_ai_enterprise_careers/
 ├── README.md
 ├── plz_ignore/
 │   └── q-context.txt       # This file
-└── videos/
+└── courses/
     └── 01-aws-comprehend-review-analysis/
 ```
 
-## Video 01: AWS Comprehend Review Analysis
+## Course 01: AWS Comprehend Review Analysis
 
 ### Architecture Overview
 ```
@@ -61,7 +61,7 @@ React Frontend → Express Backend → S3 → SQS → Lambda → AWS Comprehend 
 - Stores comprehensive analysis results back to S3
 
 ### Backend (Express.js)
-**File**: `videos/01-aws-comprehend-review-analysis/backend/index.js`
+**File**: `courses/01-aws-comprehend-review-analysis/backend/index.js`
 **Port**: 3001
 
 **Endpoints:**
@@ -77,7 +77,7 @@ React Frontend → Express Backend → S3 → SQS → Lambda → AWS Comprehend 
 **Dependencies**: express, cors, multer, @aws-sdk/client-s3, dotenv
 
 ### Frontend (React + Vite)
-**File**: `videos/01-aws-comprehend-review-analysis/frontend/src/App.jsx`
+**File**: `courses/01-aws-comprehend-review-analysis/frontend/src/App.jsx`
 **Port**: 5173 (default Vite)
 
 **Features:**
@@ -99,14 +99,14 @@ React Frontend → Express Backend → S3 → SQS → Lambda → AWS Comprehend 
 ### Development Setup
 **Backend:**
 ```bash
-cd videos/01-aws-comprehend-review-analysis/backend
+cd courses/01-aws-comprehend-review-analysis/backend
 npm install
 npm start  # Runs on port 3001
 ```
 
 **Frontend:**
 ```bash
-cd videos/01-aws-comprehend-review-analysis/frontend
+cd courses/01-aws-comprehend-review-analysis/frontend
 npm install
 npm run dev  # Runs on port 5173
 ```
@@ -135,7 +135,7 @@ pkill -f "vite"
 9. Results displayed with charts and full JSON
 
 ### Sample Data
-**Location**: `videos/01-aws-comprehend-review-analysis/data/`
+**Location**: `courses/01-aws-comprehend-review-analysis/data/`
 - `1-iphone-17-reviews.json` - iPhone 17 reviews (Canada & China)
 - `2-netflix-reviews.json` - Netflix streaming service reviews (Canada & China)
 
@@ -161,8 +161,8 @@ Both files contain product reviews for testing the analysis pipeline with differ
 - **Runtime**: Node.js (frontend/backend), Python 3.9 (Lambda)
 
 ### Logs
-- Frontend: `videos/01-aws-comprehend-review-analysis/frontend/frontend.log`
-- Backend: `videos/01-aws-comprehend-review-analysis/backend/backend.log`
+- Frontend: `courses/01-aws-comprehend-review-analysis/frontend/frontend.log`
+- Backend: `courses/01-aws-comprehend-review-analysis/backend/backend.log`
 
 ## Notes for AI Assistant
 - Project is fully operational with complete AWS pipeline

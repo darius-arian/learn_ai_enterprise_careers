@@ -1,7 +1,7 @@
-# Context File for Episode 01: AWS Comprehend Review Analysis
+# Context File for Course 01: AWS Comprehend Review Analysis
 
 ## Project Location
-`~/sajad_ai/p/learn_ai_enterprise_careers/videos/01-aws-comprehend-review-analysis`
+`~/darius_ai/p/learn_ai_enterprise_careers/courses/01-aws-comprehend-review-analysis`
 
 ## Architecture Overview
 ```
