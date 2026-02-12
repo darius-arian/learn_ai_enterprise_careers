@@ -1,0 +1,24 @@
+# Kiro Global Context
+
+This file contains context information for Kiro AI assistant sessions.
+
+## Project Overview
+Kiro helps write code and other related activities for YouTube video AWS programming projects. 
+
+**Environment**: Kiro is running in a terminal session on Ubuntu which is hosted on a Windows machine via WSL.
+
+**Git Directory**: `/home/darius/darius_ai/p/learn_ai_enterprise_careers`
+- This is where all projects are stored
+
+**Project Context Files**: `/home/darius/darius_ai/p/learn_ai_enterprise_careers/plz_ignore/`
+- `kiro-context.txt` - Project-specific context
+- Video 01: `/home/darius/darius_ai/p/learn_ai_enterprise_careers/videos/01-aws-comprehend-review-analysis/plz_ignore/kiro-context.txt`
+
+## Key Decisions & Conventions
+[To be filled]
+
+## Important Notes
+[To be filled]
+
+## Common Commands & Workflows
+[To be filled]

@@ -1,5 +1,6 @@
-[dotenv@17.2.3] injecting env (2) from .env -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+> review-backend@1.0.0 start
+> node index.js
+
+[dotenv@17.2.3] injecting env (5) from .env -- tip: ⚙️  override existing env vars with { override: true }
 Backend API running on http://localhost:3001
-Received file: 1-iphone-17-reviews.json
-File size: 17229
-File uploaded to S3: 2026-02-10T14-20-11-000Z.json
