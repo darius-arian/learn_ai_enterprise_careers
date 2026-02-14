@@ -4,7 +4,11 @@
 
 <span style="color: #166534">[Show Amazon product page with hundreds of reviews]</span>
 
-Imagine analyzing thousands of product reviews like these... in seconds. That's exactly what we built. You upload your reviews, AWS Comprehend instantly detects sentiment, extracts key insights, identifies entities - all powered by AI. Let me show you.
+Imagine analyzing thousands of product reviews like these... in seconds. That's exactly what we built. You upload your reviews, AWS Comprehend instantly detects sentiment, extracts key insights, identifies entities - all powered by AI.
+
+I'd charge between ten to twenty thousand dollars to fully implement what I'm about to show you. And you can do it too.
+
+Let me show you.
 
 <span style="color: #166534">[Open browser to localhost:5173]</span>
 
@@ -44,6 +48,22 @@ And there's more - syntax analysis, targeted sentiment for specific features, ev
 
 Full analysis results available as JSON.
 
+<span style="color: #166534">[Show subscribe button animation/highlight]</span>
+
+This took me weeks to prepare - building the system, testing everything, creating this course. If you're finding value here, hit that subscribe button and like the video. It encourages me to make more courses for you.
+
+## Habit Loop
+
+<span style="color: #166534">[Show habit loop diagram: Cue → Routine → Reward cycle]</span>
+
+The habit loop is a three-part process that explains how habits are formed and maintained.
+
+**Cue (Trigger):** The signal that initiates the behavior. For example, put a note on your monitor saying "Learn AI Course by Darius" - every time you see it, that's your trigger to start.
+
+**Routine (Behavior):** The action performed in response to the cue. This is where you actually watch the course and code along.
+
+**Reward (Reinforcement):** The positive outcome that reinforces the behavior. When you complete a section or get your code working, that feeling of accomplishment is your reward. For example, treat yourself to a bubble tea, coffee, or even dinner. Write down your reward right now - something you'll look forward to after completing this course.
+
 ## About Author
 
 <span style="color: #166534">[B-roll montage: Darius coding at desk, doing calisthenics/handstands, yoga poses, travel clips]</span>
@@ -62,9 +82,11 @@ This series will show you exactly what enterprise companies look for. Let's get 
 
 This course is for students and professionals targeting roles like Cloud Engineer, AWS Solutions Architect, Full-Stack Developer, DevOps Engineer, or AI ML Engineer - positions that pay ten K plus per month at enterprise companies.
 
-## Project Overview
+## Project Overview [INFORMATION]
 
-"Let me break down what we're building. Don't worry if some of this sounds complex right now - we'll dive deep into each piece later. Just get the big picture first."
+Before we dive in, let me explain how this course is structured. Sessions tagged as INFORMATION - like this one - are where I explain concepts, architecture, and theory. Sessions tagged as IMPLEMENTATION are where I show you exactly how to build it, step by step, hands-on.
+
+Let me break down what we're building. Don't worry if some of this sounds complex right now - we'll dive deep into each piece later. Just get the big picture first.
 
 <span style="color: #166534">[Show architecture diagram - Complete System Architecture from README]</span>
 
@@ -97,14 +119,6 @@ Meanwhile, the frontend polls the backend asking... are the results ready yet? T
 Once ready, the backend retrieves the analysis from S3 and sends it to the frontend.
 
 The frontend displays everything with interactive charts and visualizations.
-
-<span style="color: #166534">[Show Backend Architecture diagram]</span>
-
-On the backend side, we have two API endpoints: POST for uploading files, GET for retrieving results. Multer handles file uploads, we validate everything, and the AWS SDK manages all S3 operations.
-
-<span style="color: #166534">[Show AWS Infrastructure diagram]</span>
-
-The AWS infrastructure is fully serverless. S3 bucket with two folders - one for uploads, one for results. Event notifications trigger SQS. Lambda has an IAM role with specific permissions. Everything is secure, scalable, and costs almost nothing when idle.
 
 **🎯 Key Concept:** This architecture is what enterprise companies use in production. Event-driven, serverless, scalable, and cost-effective.
 
