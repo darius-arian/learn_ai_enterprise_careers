@@ -15,7 +15,15 @@ const s3Client = new S3Client({
   region: process.env.AWS_REGION || "us-east-1"
 });
 
+// S3 folder paths
+const S3_UPLOAD_FOLDER = process.env.S3_UPLOAD_FOLDER || "01-aws-comprehend-review-analysis/review-analysis-uploads";
+const S3_RESULTS_FOLDER = process.env.S3_RESULTS_FOLDER || "01-aws-comprehend-review-analysis/analysis-results";
+
 app.use(cors());
+
+app.get("/", (req, res) => {
+  res.json({ message: "Backend is running... :)" });
+});
 
 app.post("/analyze", upload.single("file"), async (req, res) => {
   if (!req.file) {
@@ -38,7 +46,7 @@ app.post("/analyze", upload.single("file"), async (req, res) => {
     // Upload to S3
     const uploadParams = {
       Bucket: process.env.S3_BUCKET_NAME || "your-bucket-name",
-      Key: `01-aws-comprehend-review-analysis/review-analysis-uploads/${fileName}`,
+      Key: `${S3_UPLOAD_FOLDER}/${fileName}`,
       Body: req.file.buffer,
       ContentType: "application/json"
     };
@@ -67,7 +75,7 @@ app.get("/results/:expectedResultFile", async (req, res) => {
     const { expectedResultFile } = req.params;
     
     // Construct the full S3 key for the expected result file
-    const resultKey = `01-aws-comprehend-review-analysis/analysis-results/${expectedResultFile}`;
+    const resultKey = `${S3_RESULTS_FOLDER}/${expectedResultFile}`;
     
     try {
       // Try to get the specific analysis result from S3
