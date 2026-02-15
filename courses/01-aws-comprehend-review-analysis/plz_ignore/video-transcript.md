@@ -297,6 +297,8 @@ Wait - we're getting an error. The backend is trying to read the PORT from envir
 
 Let's create a `.env` file for our backend configuration. The `.env` file stores sensitive information like API keys and credentials - keeping them separate from your code and out of version control. That's why the `.env` file is not available in our Git repository.
 
+**Note:** We've included a `.env.example` file in the codebase as a template showing what variables you need to configure.
+
 **Step 1:** In the backend directory, create a new file called `.env`:
 
 ```bash
