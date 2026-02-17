@@ -458,6 +458,10 @@ Here are your credentials. You'll see the **Access key** and **Secret access key
 
 **Important:** If you don't copy your secret key now, you cannot see it ever again. AWS doesn't store it. So keep this tab open until we configure our backend.
 
+<sub style="color: #9CA3AF">Video instruction: [Show .gitignore file with .env entry]</sub>
+
+**💡 ProTip:** Do not push this access key to your Git repository. Git doesn't ignore `.env` files by default - you must add `.env` to your `.gitignore` file. Our project already has this configured, but if you were working on another project, ensure to add it to your `.gitignore` file.
+
 ### Configure Backend Environment Variables [IMPLEMENTATION]
 
 <sub style="color: #9CA3AF">Video instruction: [Open backend .env file in code editor]</sub>
@@ -481,6 +485,8 @@ AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 AWS_REGION=us-east-1
 S3_BUCKET_NAME=
+S3_UPLOAD_FOLDER=
+S3_RESULTS_FOLDER=
 ```
 
 <sub style="color: #9CA3AF">Video instruction: [Switch back to AWS Console IAM tab with access keys]</sub>
@@ -513,11 +519,17 @@ AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_HERE
 AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY_HERE
 AWS_REGION=us-east-1
 S3_BUCKET_NAME=
+S3_UPLOAD_FOLDER=
+S3_RESULTS_FOLDER=
 ```
 
 Notice the `S3_BUCKET_NAME` is empty for now. Don't worry - we'll create the S3 bucket in the next step and fill this in.
 
 ### Create S3 Bucket [IMPLEMENTATION]
+
+<sub style="color: #9CA3AF">Video instruction: [Show complete system architecture diagram]</sub>
+
+Let's quickly review how our backend interacts with S3. The backend uploads review files to one folder and later retrieves analysis results from another folder. We'll create both of these folders in our S3 bucket.
 
 <sub style="color: #9CA3AF">Video instruction: [Switch to AWS Console]</sub>
 
