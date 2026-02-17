@@ -175,7 +175,8 @@ cd learn_ai_enterprise_careers/courses/01-aws-comprehend-review-analysis
 ```bash
 brew install git
 ```
-*If you don't have Homebrew installed, get it from https://brew.sh first*
+
+**Note:** If you don't have Homebrew installed, get it from https://brew.sh first
 
 **For Windows:**
 ```powershell
