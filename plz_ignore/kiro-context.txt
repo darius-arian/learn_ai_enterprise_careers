@@ -21,9 +21,17 @@ learn_ai_enterprise_careers/
 ├── LICENSE
 ├── README.md
 ├── plz_ignore/
-│   └── q-context.txt       # This file
+│   ├── kiro-context.txt       # This file
+│   └── kiro-global-context.txt
 └── courses/
     └── 01-aws-comprehend-review-analysis/
+        ├── plz_ignore/
+        │   ├── kiro-context.txt
+        │   ├── video-transcript.md
+        │   └── aws-infrastructure-report.md
+        ├── backend/
+        ├── frontend/
+        └── data/
 ```
 
 ## Course 01: AWS Comprehend Review Analysis
@@ -171,3 +179,5 @@ Both files contain product reviews for testing the analysis pipeline with differ
 - All 7 Comprehend features are active and working
 - Frontend includes interactive data visualizations
 - Use ~/lambda_function.py for Lambda updates, then zip and deploy via AWS CLI
+- AWS infrastructure report available at: courses/01-aws-comprehend-review-analysis/plz_ignore/aws-infrastructure-report.md
+- Video transcript being updated at: courses/01-aws-comprehend-review-analysis/plz_ignore/video-transcript.md

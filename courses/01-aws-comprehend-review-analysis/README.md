@@ -162,6 +162,18 @@ review-analysis-bucket-darius/
 - AWS CLI configured
 - AWS account with appropriate permissions
 
+### Lambda Function
+The Lambda function code is available at: `lambda_function.py`
+
+This Python script processes review files from S3 and calls AWS Comprehend for analysis. It performs 7 different analyses per review:
+1. Language Detection
+2. Sentiment Analysis
+3. Key Phrase Extraction
+4. Entity Recognition
+5. Syntax Analysis
+6. Targeted Sentiment
+7. PII Detection
+
 ### Backend Setup
 ```bash
 cd backend

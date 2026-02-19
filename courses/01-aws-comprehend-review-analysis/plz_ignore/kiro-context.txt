@@ -3,6 +3,11 @@
 ## Project Location
 `~/darius_ai/p/learn_ai_enterprise_careers/courses/01-aws-comprehend-review-analysis`
 
+## Documentation Files
+- **This File**: `plz_ignore/kiro-context.txt` - Project configuration and setup
+- **AWS Infrastructure Report**: `plz_ignore/aws-infrastructure-report.md` - Complete AWS architecture documentation (S3, SQS, Lambda, Comprehend)
+- **Video Transcript**: `plz_ignore/video-transcript.md` - Full video script with instructions
+
 ## Architecture Overview
 ```
 React Frontend → Express Backend → S3 → SQS → Lambda → AWS Comprehend → Results

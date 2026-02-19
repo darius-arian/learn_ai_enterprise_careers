@@ -182,9 +182,10 @@ brew install git
 ```powershell
 choco install git
 ```
-*If you don't have Chocolatey installed, get it from https://chocolatey.org first*
 
-Or download Git directly from https://git-scm.com/downloads
+**Note:** If you don't have Chocolatey installed, get it from https://chocolatey.org first
+
+**Note:** Or download Git directly from https://git-scm.com/downloads
 
 <sub style="color: #9CA3AF">Video instruction: [Show terminal executing the commands]</sub>
 
@@ -524,7 +525,7 @@ S3_UPLOAD_FOLDER=
 S3_RESULTS_FOLDER=
 ```
 
-Notice the `S3_BUCKET_NAME` is empty for now. Don't worry - we'll create the S3 bucket in the next step and fill this in.
+Notice the `S3_BUCKET_NAME`, `S3_UPLOAD_FOLDER`, and `S3_RESULTS_FOLDER` are empty for now. Don't worry - we'll create the S3 bucket in the next step and fill these in.
 
 ### Create S3 Bucket [IMPLEMENTATION]
 
@@ -547,6 +548,8 @@ Now let's create the S3 bucket where we'll store our review files and analysis r
 **Step 3:** Enter a bucket name. S3 bucket names must be globally unique across all of AWS, so let's use: **review-analysis-bucket-darius**
 
 <sub style="color: #9CA3AF">Video instruction: [Type bucket name: review-analysis-bucket-darius]</sub>
+
+**Note:** Please use the same naming as shown in this tutorial to avoid confusion. We'll reference these names in multiple places throughout the project (backend code, Lambda function, event notifications). If you must use a different name, make sure to update it consistently everywhere.
 
 **Step 4:** Make sure the region is set to **us-east-1** (US East - N. Virginia).
 
@@ -624,6 +627,8 @@ S3_UPLOAD_FOLDER=01-aws-comprehend-review-analysis/review-analysis-uploads
 S3_RESULTS_FOLDER=01-aws-comprehend-review-analysis/analysis-results
 ```
 
+**Note:** `AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_HERE` and `AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY_HERE` should have actual values you got from previous steps, not the dummy data.
+
 **Step 13:** Save the file.
 
 <sub style="color: #9CA3AF">Video instruction: [Save .env file]</sub>
@@ -642,15 +647,579 @@ Let's try uploading a review file again.
 
 <sub style="color: #9CA3AF">Video instruction: [Upload review file, click Analyze]</sub>
 
-<sub style="color: #9CA3AF">Video instruction: [Show browser console with error about S3 bucket]</sub>
+Perfect! Our backend can now connect to AWS via the AWS SDK and upload the file to the S3 bucket.
 
-We're getting a different error now - something about the S3 bucket not existing. That's actually good news! It means our backend successfully authenticated with AWS using the credentials we just configured. The error is because we haven't created the S3 bucket yet.
+Let's confirm the file was actually uploaded to the folder.
 
-Perfect. Our backend can now authenticate with AWS. However, we still need to create S3 buckets to store our data.
+<sub style="color: #9CA3AF">Video instruction: [Switch to AWS Console, navigate to S3, open review-analysis-bucket-darius → 01-aws-comprehend-review-analysis → review-analysis-uploads folder, show uploaded file with timestamp name like 2026-02-03T17-45-51-009Z.json]</sub>
 
-<sub style="color: #9CA3AF">Video instruction: [Save .env file]</sub>
+There it is - our review file successfully uploaded to the review-analysis-uploads folder in S3. Notice how the backend automatically renamed it with a timestamp: `2026-02-03T17-45-51-009Z.json`. This ensures every upload has a unique name.
 
-Perfect. Our backend can now authenticate with AWS.
+<sub style="color: #9CA3AF">Video instruction: [Click on the .json file, then click the Open button to show the JSON contents with the review data]</sub>
+
+Here's the content - our product reviews in JSON format, ready to be processed by Lambda and Comprehend.
+
+Now let's set up the AWS infrastructure to analyze these reviews and store the results in the `analysis-results` folder - where our backend retrieves them and sends them to the frontend.
+
+### AWS Infrastructure Demo [INFORMATION]
+
+<sub style="color: #9CA3AF">Video instruction: [Show AWS Infrastructure flowchart from README]</sub>
+
+Before we start building, let's walk through exactly what happens when a user uploads a review file. I'll show you each AWS service in action on the AWS dashboard.
+
+<sub style="color: #9CA3AF">Video instruction: [Switch to browser with frontend at localhost:5173]</sub>
+
+Let's say a user uploads this iPhone reviews JSON file.
+
+<sub style="color: #9CA3AF">Video instruction: [Upload 1-iphone-17-reviews.json, click Analyze]</sub>
+
+The backend receives it and uploads to S3 with a timestamp name like `2026-02-18T13-30-45-123Z.json`.
+
+<sub style="color: #9CA3AF">Video instruction: [Switch to AWS Console, navigate to S3]</sub>
+
+**Step 1: S3 Bucket** - Here's our S3 bucket. The file lands in the `review-analysis-uploads/` folder.
+
+<sub style="color: #9CA3AF">Video instruction: [PAUSE - Show popup overlay explaining S3]</sub>
+
+**What is Amazon S3?**
+
+S3 stands for Simple Storage Service. It's AWS's object storage service - think of it as an infinitely scalable hard drive in the cloud. You can store any type of file: images, videos, documents, backups, anything.
+
+**Key features:**
+- **Durability**: 99.999999999% (11 nines) - your data is replicated across multiple data centers
+- **Scalability**: Store from 1 byte to petabytes without worrying about capacity
+- **Pay-as-you-go**: Only pay for what you store and transfer
+
+**Example 1: Static Website Hosting**
+Companies host entire websites on S3. Upload your HTML, CSS, JavaScript files, enable static website hosting, and you have a live website. No servers to manage. Netflix uses S3 to store and serve images for their UI.
+
+**Example 2: Data Lake for Analytics**
+Enterprises store massive datasets in S3 for analysis. A retail company might store years of transaction logs, then use AWS Athena to query them directly without moving the data. S3 becomes the central repository for all company data.
+
+**Example 3: Backup and Disaster Recovery**
+Companies backup their databases and critical files to S3. If their primary systems fail, they can restore from S3. Many use S3 Glacier for long-term archival at lower cost.
+
+**Example 4: Application File Storage**
+Mobile apps and web apps store user-generated content in S3. Instagram stores billions of photos in S3. When you upload a photo, it goes to S3, and when you view it, it's served from S3.
+
+**In Our Project:**
+S3 stores two things: the original review JSON files uploaded by users, and the analysis results generated by Lambda after calling Comprehend. The backend uploads files to the `review-analysis-uploads/` folder, and Lambda saves results to the `analysis-results/` folder. S3 also triggers the entire pipeline by sending event notifications when new files arrive.
+
+<sub style="color: #9CA3AF">Video instruction: [Resume demo, show S3 bucket, navigate to review-analysis-uploads folder, show the uploaded file]</sub>
+
+Now watch what happens. The moment this file appears, S3 has an event notification configured.
+
+<sub style="color: #9CA3AF">Video instruction: [Click on bucket name, go to Properties tab, scroll to Event notifications section]</sub>
+
+See this event notification? It's watching the uploads folder. When a `.json` file appears, it automatically sends a message to our SQS queue.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate to SQS service in AWS Console]</sub>
+
+**Step 2: SQS Queue** - Here's our queue: `review-analysis-queue`.
+
+<sub style="color: #9CA3AF">Video instruction: [PAUSE - Show popup overlay explaining SQS]</sub>
+
+**What is Amazon SQS?**
+
+SQS stands for Simple Queue Service. It's a fully managed message queuing service that enables you to decouple and scale microservices, distributed systems, and serverless applications. Think of it as a reliable post office that holds messages until they're picked up.
+
+**Key features:**
+- **Reliable**: Messages are stored redundantly across multiple servers
+- **Scalable**: Handles from 1 to millions of messages per second
+- **Decoupling**: Sender and receiver don't need to interact at the same time
+
+**Example 1: Order Processing**
+An e-commerce site receives thousands of orders per second during Black Friday. Instead of processing them immediately (which could crash the system), orders are sent to an SQS queue. Worker servers pick up orders from the queue at their own pace, ensuring no orders are lost even during traffic spikes.
+
+**Example 2: Image Processing Pipeline**
+A photo-sharing app receives user uploads. The upload service puts a message in SQS saying "new image uploaded." Multiple worker services pick up messages and process them: one creates thumbnails, another scans for inappropriate content, another extracts metadata. All working independently, all pulling from the same queue.
+
+**Example 3: Microservices Communication**
+In a microservices architecture, Service A needs to notify Service B about an event, but Service B might be down for maintenance. Instead of failing, Service A sends a message to SQS. When Service B comes back online, it processes all queued messages. No data loss, no tight coupling.
+
+**In Our Project:**
+SQS sits between S3 and Lambda. When a review file is uploaded to S3, S3 sends a notification message to this queue. Lambda polls the queue and processes messages one by one. If Lambda fails or times out, SQS automatically makes the message visible again for retry. This ensures every uploaded file gets processed, even during high traffic or temporary failures.
+
+<sub style="color: #9CA3AF">Video instruction: [Resume demo, click on the queue, show Messages available count]</sub>
+
+See the message count? That's the notification from S3 saying "hey, a new file just arrived." SQS holds this message until Lambda is ready to process it.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate to Lambda service in AWS Console]</sub>
+
+**Step 3: Lambda Function** - Here's our Lambda function: `review-analysis-processor`.
+
+<sub style="color: #9CA3AF">Video instruction: [PAUSE - Show popup overlay explaining Lambda]</sub>
+
+**What is AWS Lambda?**
+
+Lambda is AWS's serverless compute service. You upload your code, and AWS runs it for you - no servers to provision, no infrastructure to manage. You only pay for the compute time you actually use, measured in milliseconds.
+
+**Key features:**
+- **Serverless**: No servers to manage, patch, or scale
+- **Auto-scaling**: Handles 1 request or 10,000 requests automatically
+- **Pay-per-use**: Only charged when your code runs, down to 100ms increments
+
+**Example 1: API Backend**
+A mobile app needs a backend API. Instead of running servers 24/7, developers write Lambda functions for each API endpoint. When a user makes a request, Lambda executes the function and returns the response. If 1 million users hit the API simultaneously, Lambda automatically scales to handle it. If nobody uses the app at 3 AM, you pay nothing.
+
+**Example 2: Scheduled Tasks**
+A company needs to generate daily reports at midnight. A Lambda function runs on a schedule (using CloudWatch Events), queries the database, generates a PDF report, and emails it to managers. No server sitting idle for 23 hours a day - Lambda runs for 2 minutes, you pay for 2 minutes.
+
+**Example 3: Real-time File Processing**
+A video streaming platform receives video uploads. When a video lands in S3, Lambda automatically triggers, transcodes the video to multiple resolutions (1080p, 720p, 480p), generates thumbnails, and updates the database. All without managing any servers.
+
+**Example 4: IoT Data Processing**
+Smart home devices send temperature readings every minute. Lambda processes each reading, checks if it's outside normal range, and sends alerts if needed. Scales automatically as you add more devices - from 10 to 10 million.
+
+**Example 5: Chatbot Backend**
+A customer service chatbot powered by Lambda. Each user message triggers a Lambda function that processes the text, calls an AI service, and returns a response. Handles thousands of concurrent conversations without pre-provisioning servers.
+
+**In Our Project:**
+Lambda is the brain of our pipeline. It's triggered by SQS messages, downloads the review file from S3, calls AWS Comprehend seven times per review to analyze sentiment, entities, key phrases, and more, then saves the complete analysis back to S3. Lambda scales automatically - if 100 users upload files simultaneously, 100 Lambda instances spin up to process them in parallel. We only pay for the seconds Lambda actually runs.
+
+<sub style="color: #9CA3AF">Video instruction: [Resume demo, click on the function, show Configuration tab]</sub>
+
+Lambda is constantly polling that SQS queue. When it sees a message, it wakes up, grabs the message, and starts processing.
+
+<sub style="color: #9CA3AF">Video instruction: [Click on Configuration → Triggers, show SQS trigger]</sub>
+
+See this trigger? That's the connection between SQS and Lambda. Lambda automatically invokes when messages arrive.
+
+<sub style="color: #9CA3AF">Video instruction: [Click on Configuration → Permissions, show IAM role]</sub>
+
+**Step 4: IAM Role** - This role gives Lambda permission to read from S3, receive messages from SQS, call Comprehend, and write results back to S3.
+
+<sub style="color: #9CA3AF">Video instruction: [PAUSE - Show popup overlay explaining IAM]</sub>
+
+**What is AWS IAM?**
+
+IAM stands for Identity and Access Management. It's AWS's security service that controls who can access what in your AWS account. Think of it as the security guard and badge system for your cloud infrastructure.
+
+**Key concepts:**
+- **Users**: Individual people with login credentials
+- **Roles**: Permissions that services can assume (like Lambda, EC2)
+- **Policies**: Documents that define what actions are allowed or denied
+
+**Example 1: Employee Access Control**
+A company has developers, data scientists, and managers. Developers get IAM permissions to deploy code to Lambda and EC2. Data scientists get access to S3 data buckets and SageMaker. Managers get read-only access to billing. Each person only sees and can modify what they need - principle of least privilege.
+
+**Example 2: Cross-Account Access**
+Company A wants to share specific S3 data with Company B (a partner). Instead of creating passwords, Company A creates an IAM role that Company B's AWS account can assume. Company B can access only that specific S3 bucket, nothing else. Access can be revoked instantly by deleting the role.
+
+**Example 3: Service-to-Service Permissions**
+An EC2 server needs to read from S3 and write to DynamoDB. Instead of hardcoding AWS credentials in the code (security risk), you attach an IAM role to the EC2 instance. The role grants S3 read and DynamoDB write permissions. AWS automatically handles credential rotation and security.
+
+**In Our Project:**
+Our Lambda function needs to interact with multiple AWS services: read files from S3, receive messages from SQS, call Comprehend APIs, and write results back to S3. The IAM role `review-analysis-lambda-role` grants Lambda exactly these permissions. Without this role, Lambda would get "Access Denied" errors when trying to access these services. The role ensures Lambda can do its job while following the principle of least privilege.
+
+<sub style="color: #9CA3AF">Video instruction: [Resume demo, click on the role name to open IAM, show attached policies]</sub>
+
+See these policies? S3 access, SQS access, Comprehend access. Without these, Lambda can't do anything.
+
+<sub style="color: #9CA3AF">Video instruction: [Go back to Lambda function, click on Monitor tab, then View CloudWatch logs]</sub>
+
+**Step 5: Lambda Execution** - Let's check the logs to see what Lambda actually did.
+
+<sub style="color: #9CA3AF">Video instruction: [Click on latest log stream, show logs with Comprehend API calls]</sub>
+
+Here's the execution. Lambda downloaded the file from S3, parsed the reviews, and called AWS Comprehend seven times per review: language detection, sentiment analysis, key phrases, entities, syntax, targeted sentiment, and PII detection.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate to Comprehend service in AWS Console]</sub>
+
+**Step 6: AWS Comprehend** - This is the AI service doing the heavy lifting. It's a fully managed NLP service - no training required, just API calls.
+
+<sub style="color: #9CA3AF">Video instruction: [PAUSE - Show popup overlay explaining Comprehend]</sub>
+
+**What is AWS Comprehend?**
+
+Comprehend is AWS's natural language processing (NLP) service powered by machine learning. It analyzes text to extract insights like sentiment, entities, key phrases, and language. The models are pre-trained on massive datasets - you just send text and get structured insights back.
+
+**Key features:**
+- **Pre-trained models**: No ML expertise or training data required
+- **Multiple languages**: Supports 100+ languages
+- **Real-time and batch**: Process one document or millions
+
+**Example 1: Customer Support Ticket Analysis**
+A company receives 10,000 support tickets daily. Comprehend analyzes each ticket to detect sentiment (angry, neutral, satisfied), extract key phrases (billing issue, login problem), and identify entities (product names, account numbers). Urgent negative tickets are automatically prioritized for human agents.
+
+**Example 2: Social Media Monitoring**
+A brand monitors Twitter mentions. Comprehend analyzes tweets in real-time to detect sentiment about their products. If sentiment suddenly drops, marketing teams get alerted. They can also extract trending topics and entities to understand what customers are talking about.
+
+**Example 3: Document Classification**
+A law firm processes thousands of legal documents. Comprehend extracts entities (people, organizations, dates), identifies key phrases (contract terms, clauses), and detects PII (personally identifiable information) for redaction. This automates hours of manual review work.
+
+**In Our Project:**
+Comprehend is the AI engine that analyzes product reviews. For each review, Lambda calls Comprehend seven times: language detection (is it English or Chinese?), sentiment analysis (positive, negative, neutral?), key phrase extraction (what topics are mentioned?), entity recognition (what products, locations, brands?), syntax analysis (grammatical structure), targeted sentiment (sentiment about specific features), and PII detection (any personal information?). All this happens in seconds without us training any models.
+
+<sub style="color: #9CA3AF">Video instruction: [Resume demo, show Comprehend dashboard, maybe click on Analysis jobs or Real-time analysis]</sub>
+
+Comprehend processes the text and returns structured insights - sentiment scores, entities, key phrases, everything.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate back to S3, go to analysis-results folder]</sub>
+
+**Step 7: Results Storage** - Lambda takes all those Comprehend results and saves them back to S3 in the `analysis-results/` folder with a matching timestamp: `analysis-2026-02-18T13-30-45-123Z.json`.
+
+<sub style="color: #9CA3AF">Video instruction: [Show the result file in analysis-results folder, click to preview JSON]</sub>
+
+There's our analysis - complete with sentiment, entities, key phrases, everything.
+
+<sub style="color: #9CA3AF">Video instruction: [Switch back to frontend, click See Results]</sub>
+
+The frontend polls the backend, the backend retrieves this file from S3, and boom - results displayed with charts and visualizations.
+
+<sub style="color: #9CA3AF">Video instruction: [Show results with charts]</sub>
+
+That's the complete flow. Now let's build this infrastructure step by step.
+
+### AWS Infrastructure Implementation [IMPLEMENTATION]
+
+Now let's actually build this infrastructure. We already have the S3 bucket and folders set up. We need to create the SQS queue, Lambda function, IAM role, and configure everything to work together.
+
+#### Create SQS Queue
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate to AWS Console]</sub>
+
+SQS is our message queue that sits between S3 and Lambda. It ensures reliable message delivery and provides retry logic if Lambda fails.
+
+**Step 1:** In the AWS Console search bar, type **SQS** and click on the service.
+
+<sub style="color: #9CA3AF">Video instruction: [Search for SQS and click]</sub>
+
+**Step 2:** Click **Create queue**.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Create queue button]</sub>
+
+**Step 3:** For queue type, select **Standard**. Standard queues provide high throughput and at-least-once delivery, which is perfect for our use case.
+
+<sub style="color: #9CA3AF">Video instruction: [Select Standard queue type]</sub>
+
+**Step 4:** For the queue name, enter: **review-analysis-queue**
+
+<sub style="color: #9CA3AF">Video instruction: [Type queue name]</sub>
+
+**Note:** Please use the same naming as shown in this tutorial. This queue name will be referenced in the Lambda trigger configuration and S3 event notifications.
+
+**Step 5:** Under Configuration, set **Visibility timeout** to **300 seconds** (5 minutes). This gives Lambda enough time to process the file and call Comprehend without the message becoming visible to other consumers.
+
+<sub style="color: #9CA3AF">Video instruction: [Set Visibility timeout to 300]</sub>
+
+**💡 ProTip:** Visibility timeout is how long a message stays hidden after a consumer picks it up. If Lambda takes 2 minutes to process but the timeout is 30 seconds, SQS will think Lambda failed and send the message again, causing duplicate processing. Always set this longer than your expected processing time.
+
+**Step 6:** Leave all other settings as default and scroll down. Click **Create queue**.
+
+<sub style="color: #9CA3AF">Video instruction: [Scroll and click Create queue]</sub>
+
+Perfect! Queue created. Now we need to give S3 permission to send messages to this queue.
+
+<sub style="color: #9CA3AF">Video instruction: [Show queue details page]</sub>
+
+**Step 7:** Copy the **Queue ARN** - we'll need this for the S3 event notification. It looks like: `arn:aws:sqs:us-east-1:123456789012:review-analysis-queue`
+
+<sub style="color: #9CA3AF">Video instruction: [Highlight and copy Queue ARN]</sub>
+
+**Step 8:** Click on the **Access policy** tab.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Access policy tab]</sub>
+
+**Step 9:** Click **Edit** to modify the policy.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Edit button]</sub>
+
+**Step 10:** Replace the policy with this JSON. This allows S3 to send messages to our queue:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "<YOUR_SQS_QUEUE_ARN>",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "arn:aws:s3:::<YOUR_S3_BUCKET_NAME>"
+        }
+      }
+    }
+  ]
+}
+```
+
+<sub style="color: #9CA3AF">Video instruction: [Show policy editor, paste JSON]</sub>
+
+**Note:** Replace `<YOUR_SQS_QUEUE_ARN>` with the Queue ARN you copied earlier (e.g., `arn:aws:sqs:us-east-1:123456789012:review-analysis-queue`). Replace `<YOUR_S3_BUCKET_NAME>` with your bucket name (e.g., `review-analysis-bucket-darius`).
+
+**💡 ProTip:** This policy uses the principle of least privilege. It only allows the S3 service to send messages, and only from our specific bucket. No other service or bucket can send messages to this queue.
+
+**Step 11:** Click **Save**.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Save]</sub>
+
+SQS queue is ready. Now let's create the Lambda function.
+
+#### Create IAM Role for Lambda
+
+Before we create the Lambda function, we need to create an IAM role that gives Lambda the permissions it needs.
+
+**Step 1:** Navigate to **IAM** service.
+
+<sub style="color: #9CA3AF">Video instruction: [Search for IAM and click]</sub>
+
+**Step 2:** Click **Roles** in the left sidebar.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Roles]</sub>
+
+**Step 3:** Click **Create role**.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Create role]</sub>
+
+**Step 4:** For trusted entity type, select **AWS service**.
+
+<sub style="color: #9CA3AF">Video instruction: [Select AWS service]</sub>
+
+**Step 5:** For use case, select **Lambda**, then click **Next**.
+
+<sub style="color: #9CA3AF">Video instruction: [Select Lambda, click Next]</sub>
+
+**Step 6:** Now we need to attach policies. Search for and select these four policies:
+
+1. **AWSLambdaBasicExecutionRole** - Allows Lambda to write logs to CloudWatch
+2. **AmazonS3FullAccess** - Allows Lambda to read from uploads folder and write to results folder
+3. **AmazonSQSFullAccess** - Allows Lambda to receive and delete messages from the queue
+4. **ComprehendFullAccess** - Allows Lambda to call all AWS Comprehend APIs
+
+<sub style="color: #9CA3AF">Video instruction: [Search and check each policy one by one]</sub>
+
+**💡 ProTip:** In production, you'd create custom policies with minimal permissions instead of using FullAccess policies. But for learning and development, FullAccess is fine.
+
+**Step 7:** Click **Next**.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Next]</sub>
+
+**Step 8:** For role name, enter: **review-analysis-lambda-role**
+
+<sub style="color: #9CA3AF">Video instruction: [Type role name]</sub>
+
+**Note:** Please use the same naming as shown in this tutorial. This role name will be assigned to the Lambda function.
+
+**Step 9:** Scroll down and click **Create role**.
+
+<sub style="color: #9CA3AF">Video instruction: [Scroll and click Create role]</sub>
+
+Perfect! IAM role created. Now Lambda will have all the permissions it needs.
+
+#### Create Lambda Function
+
+Now let's create the Lambda function that processes the reviews.
+
+**Step 1:** Navigate to **Lambda** service.
+
+<sub style="color: #9CA3AF">Video instruction: [Search for Lambda and click]</sub>
+
+**Step 2:** Click **Create function**.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Create function]</sub>
+
+**Step 3:** Select **Author from scratch**.
+
+<sub style="color: #9CA3AF">Video instruction: [Select Author from scratch]</sub>
+
+**Step 4:** For function name, enter: **review-analysis-processor**
+
+<sub style="color: #9CA3AF">Video instruction: [Type function name]</sub>
+
+**Note:** Please use the same naming as shown in this tutorial. This function name will be referenced in CloudWatch logs and monitoring.
+
+**Step 5:** For runtime, select **Python 3.10** (or the latest Python 3.x version available).
+
+<sub style="color: #9CA3AF">Video instruction: [Select Python 3.10 from dropdown]</sub>
+
+**💡 ProTip:** We're using Python because AWS SDK for Python (boto3) has excellent support for Comprehend and is pre-installed in Lambda. No need to package dependencies.
+
+**Step 6:** Under Permissions, expand **Change default execution role**.
+
+<sub style="color: #9CA3AF">Video instruction: [Expand Change default execution role]</sub>
+
+**Step 7:** Select **Use an existing role** and choose **review-analysis-lambda-role** from the dropdown.
+
+<sub style="color: #9CA3AF">Video instruction: [Select Use an existing role, choose review-analysis-lambda-role]</sub>
+
+**Step 8:** Click **Create function**.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Create function]</sub>
+
+Great! Function created. Now we need to add the code.
+
+<sub style="color: #9CA3AF">Video instruction: [Show Lambda function page with Code tab]</sub>
+
+**Step 9:** Scroll down to the **Code source** section. We need to add our Lambda function code.
+
+<sub style="color: #9CA3AF">Video instruction: [Show Lambda code editor]</sub>
+
+The complete Lambda function code is available in the project repository at `courses/01-aws-comprehend-review-analysis/lambda_function.py`. This code handles the entire processing pipeline: receiving SQS messages, downloading files from S3, calling all 7 Comprehend APIs, and saving results back to S3.
+
+<sub style="color: #9CA3AF">Video instruction: [Open courses/01-aws-comprehend-review-analysis/lambda_function.py file from project, show the code briefly]</sub>
+
+Copy the entire contents of `lambda_function.py` and paste it into the Lambda code editor, replacing the default code.
+
+<sub style="color: #9CA3AF">Video instruction: [Show code being pasted into Lambda editor]</sub>
+
+**Note:** We'll explain this code in detail in a later section. For now, just know it processes reviews through Comprehend and saves the results.
+
+**Step 10:** Click **Deploy** to save the code.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Deploy button]</sub>
+
+**Step 11:** Now we need to increase the timeout. Click on the **Configuration** tab.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Configuration tab]</sub>
+
+**Step 12:** Click **General configuration**, then click **Edit**.
+
+<sub style="color: #9CA3AF">Video instruction: [Click General configuration, then Edit]</sub>
+
+**Step 13:** Change **Timeout** to **5 minutes** (300 seconds). Comprehend API calls can take time, especially with multiple reviews.
+
+<sub style="color: #9CA3AF">Video instruction: [Change timeout to 5 min 0 sec]</sub>
+
+**Step 14:** Click **Save**.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Save]</sub>
+
+Perfect! Lambda function is ready. Now let's connect it to SQS.
+
+#### Connect Lambda to SQS
+
+**Step 1:** In the Lambda function page, click **Add trigger**.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Add trigger button]</sub>
+
+**Step 2:** In the trigger configuration, select **SQS** from the dropdown.
+
+<sub style="color: #9CA3AF">Video instruction: [Select SQS]</sub>
+
+**Step 3:** For SQS queue, select **review-analysis-queue**.
+
+<sub style="color: #9CA3AF">Video instruction: [Select review-analysis-queue from dropdown]</sub>
+
+**Step 4:** Leave **Batch size** as **1** - this means Lambda processes one message at a time.
+
+<sub style="color: #9CA3AF">Video instruction: [Show Batch size set to 1]</sub>
+
+**💡 ProTip:** Batch size determines how many messages Lambda receives in a single invocation. For our use case, processing one file at a time is simpler and easier to debug.
+
+**Step 5:** Click **Add**.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Add]</sub>
+
+Excellent! Lambda is now connected to SQS. Whenever a message arrives in the queue, Lambda will automatically invoke.
+
+#### Configure S3 Event Notification
+
+Now for the final piece - configuring S3 to send notifications to SQS when files are uploaded.
+
+**Step 1:** Navigate to **S3** service.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate to S3]</sub>
+
+**Step 2:** Click on **review-analysis-bucket-darius**.
+
+<sub style="color: #9CA3AF">Video instruction: [Click on bucket]</sub>
+
+**Step 3:** Click on the **Properties** tab.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Properties tab]</sub>
+
+**Step 4:** Scroll down to **Event notifications** section and click **Create event notification**.
+
+<sub style="color: #9CA3AF">Video instruction: [Scroll to Event notifications, click Create event notification]</sub>
+
+**Step 5:** For event name, enter: **review-upload-notification**
+
+<sub style="color: #9CA3AF">Video instruction: [Type event name]</sub>
+
+**Note:** Please use the same naming as shown in this tutorial for consistency.
+
+**Step 6:** For prefix, enter: **01-aws-comprehend-review-analysis/review-analysis-uploads/**
+
+This ensures the notification only triggers for files in the uploads folder. Remember, we have two folders: `review-analysis-uploads/` for incoming files and `analysis-results/` for processed results - we only want to trigger on uploads.
+
+<sub style="color: #9CA3AF">Video instruction: [Type prefix]</sub>
+
+**Step 7:** For suffix, enter: **.json**
+
+This ensures the notification only triggers for JSON files.
+
+<sub style="color: #9CA3AF">Video instruction: [Type suffix]</sub>
+
+**Step 8:** Under Event types, check **All object create events** (or specifically **PUT** and **POST**).
+
+This triggers the notification whenever a new file is uploaded to S3, whether through the console, API, or our backend.
+
+<sub style="color: #9CA3AF">Video instruction: [Check All object create events]</sub>
+
+**Step 9:** Scroll down to **Destination** and select **SQS queue**.
+
+<sub style="color: #9CA3AF">Video instruction: [Select SQS queue]</sub>
+
+**Step 10:** Select **review-analysis-queue** from the dropdown.
+
+<sub style="color: #9CA3AF">Video instruction: [Select review-analysis-queue]</sub>
+
+**Step 11:** Click **Save changes**.
+
+<sub style="color: #9CA3AF">Video instruction: [Click Save changes]</sub>
+
+Perfect! S3 event notification is configured. Now whenever a JSON file is uploaded to the `review-analysis-uploads/` folder, S3 will automatically send a message to SQS, which will trigger Lambda, which will call Comprehend and save the results.
+
+The entire AWS infrastructure is now complete and operational!
+
+#### Test the Complete Pipeline
+
+Let's test everything end-to-end.
+
+<sub style="color: #9CA3AF">Video instruction: [Switch to browser with frontend at localhost:5173]</sub>
+
+**Step 1:** Upload a review file.
+
+<sub style="color: #9CA3AF">Video instruction: [Upload 1-iphone-17-reviews.json, click Analyze]</sub>
+
+**Step 2:** The backend uploads to S3. Let's check the AWS Console.
+
+<sub style="color: #9CA3AF">Video instruction: [Switch to AWS Console, navigate to S3, show file in review-analysis-uploads folder]</sub>
+
+File is there. Now let's check SQS.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate to SQS, show message count]</sub>
+
+Message received! Now let's check Lambda.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate to Lambda, click Monitor tab, click View CloudWatch logs]</sub>
+
+Lambda is processing. Let's wait a moment...
+
+<sub style="color: #9CA3AF">Video instruction: [Show logs with processing messages]</sub>
+
+Processing complete! Now let's check if the results are in S3.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate to S3, go to analysis-results folder, show result file]</sub>
+
+There it is! Results saved. Now let's check the frontend.
+
+<sub style="color: #9CA3AF">Video instruction: [Switch to frontend, click See Results]</sub>
+
+And boom - results displayed with all the charts and visualizations!
+
+<sub style="color: #9CA3AF">Video instruction: [Show results with charts: language distribution, sentiment analysis, geographic heatmap, etc.]</sub>
+
+The complete pipeline is working. From upload to analysis to visualization - fully automated, fully serverless, fully scalable.
+
+**💡 ProTip:** This architecture can handle one file or a thousand files. Lambda scales automatically, SQS buffers the load, and you only pay for what you use. That's the power of serverless.
+
+Congratulations! You've just built an enterprise-grade, production-ready AI analysis pipeline on AWS.
 
 ---
 
