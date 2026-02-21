@@ -48,6 +48,10 @@ Here's the upload interface.
 
 Let's upload some iPhone reviews from Canada and China.
 
+<sub style="color: #9CA3AF">Video instruction: [Navigate to data folder, show 1-iphone-17-reviews.json file]</sub>
+
+These review files are prepared by the data scientist on your team. They include the product name and customer reviews collected from various sources. In a real enterprise environment, this data might come from your e-commerce platform, customer feedback systems, or third-party review aggregators.
+
 <sub style="color: #9CA3AF">Video instruction: [Drag and drop 1-iphone-17-reviews.json]</sub>
 
 Click Analyze to start processing.
@@ -271,6 +275,10 @@ Let's try uploading a review file.
 
 <sub style="color: #9CA3AF">Video instruction: [Drag and drop review file, click Analyze]</sub>
 
+<sub style="color: #9CA3AF">Video instruction: [Show Network tab with failed request]</sub>
+
+**Note:** Let's customize the Network tab to show URLs instead of names. Right-click on the column headers in the Network tab, uncheck "Name", and check "URL". This is better because you can see exactly which API endpoint is being called (like `http://localhost:3001/analyze`).
+
 And... we get an error. That's expected - our backend isn't running yet. Don't worry, we'll fix this in the next step.
 
 <sub style="color: #9CA3AF">Video instruction: [Show browser console with network error]</sub>
@@ -328,9 +336,19 @@ Here you can see the API request our frontend sent to the backend. Click on the 
 
 See this POST request to http://localhost:3001/analyze? That's our frontend sending the file to the backend. Click on it to see the request and response details.
 
+**💡 ProTip:** Every API call has three key parts: (1) **URL** - the endpoint being called (`http://localhost:3001/analyze`), (2) **Payload** - the data being sent (in our case, the JSON file in the request body), and (3) **Response** - what the server sends back (success message, error, or data). Understanding these three parts helps you debug any API issue.
+
 <sub style="color: #9CA3AF">Video instruction: [Show backend terminal or check backend logs with error]</sub>
 
-We're getting an error. Let's check what happened. If you look at the backend logs, you'll see:
+We're getting an error. Let's check what happened. If you look at the Network tab response, you'll see:
+
+```json
+{
+  "error": "Failed to process file"
+}
+```
+
+And in the backend logs:
 
 ```
 S3 upload error: AccessDenied: Access Denied
@@ -354,11 +372,11 @@ If you don't have an AWS account yet, go to https://aws.amazon.com and create on
 
 **💡 ProTip:** AWS services are paid, but the ones we use in this course shouldn't cost you much - maybe a dollar or so. If you're aiming for 10K per month, you shouldn't concern yourself with a few bucks. Your time is worth gold. However, at the end of the course, I'll show you how to remove those services to stop getting recurring fees.
 
-<sub style="color: #9CA3AF">Video instruction: [Show AWS homepage]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Show AWS homepage, then open AWS Console after account creation]</sub>
 
 **Region Selection**
 
-<sub style="color: #9CA3AF">Video instruction: [Show AWS Console with region selector in top-right]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Click on region selector in top-right corner of AWS Console, show that we're in N. Virginia (us-east-1)]</sub>
 
 I encourage you to use **us-east-1** (US East - N. Virginia) as your region. This region is usually the cheapest and has the most comprehensive coverage of AWS services. You can select it from the dropdown in the top-right corner of the AWS Console.
 
@@ -369,6 +387,8 @@ I encourage you to use **us-east-1** (US East - N. Virginia) as your region. Thi
 IAM stands for Identity and Access Management. It's AWS's system for controlling who can access what in your AWS account. Think of it like security badges in a building - different people get different levels of access.
 
 For our backend to communicate with AWS, it needs credentials - specifically, an access key and a secret key. These act like a username and password, but for programmatic access.
+
+**Note:** We'll dive deeper into IAM concepts in the AWS Infrastructure Demo [INFORMATION] session later. For now, just follow along with the setup.
 
 **💡 ProTip:** Here's an important security principle used in every enterprise company: least privilege access. Each employee or service should only have the minimum permissions needed to do their job. Nothing more. Why? If an account gets compromised, the hacker has limited access to your system. They can't do much damage.
 
@@ -422,7 +442,7 @@ Perfect. User created. Now we need to generate access keys.
 
 <sub style="color: #9CA3AF">Video instruction: [Navigate back to Users list]</sub>
 
-Go back to **Users** and click on **review-analysis-backend-user**.
+In **Users** page click on **review-analysis-backend-user**.
 
 <sub style="color: #9CA3AF">Video instruction: [Click on the user]</sub>
 
@@ -458,19 +478,23 @@ Here are your credentials. You'll see the **Access key** and **Secret access key
 
 ### Configure Backend Environment Variables [IMPLEMENTATION]
 
-<sub style="color: #9CA3AF">Video instruction: [Open backend .env file in code editor]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Open backend directory in code editor]</sub>
 
-Now we need to add our AWS credentials to the backend configuration. Remember that `.env` file we created earlier with just the PORT? Let's add the AWS credentials to it.
+Now we need to configure the backend with AWS credentials. We'll create a `.env` file to store sensitive information like API keys and credentials - keeping them separate from your code and out of version control.
 
 **💡 ProTip:** Never commit secrets, passwords, or sensitive data to Git repositories. The `.env` file contains credentials that could compromise your AWS account if exposed. That's why it's listed in `.gitignore` and excluded from version control.
 
-<sub style="color: #9CA3AF">Video instruction: [Show .env file with only PORT=3001]</sub>
+**Step 1:** In the backend directory, create a new file called `.env`:
 
-Let's add the AWS configuration:
+```bash
+# Navigate to backend directory from project root
+cd courses/01-aws-comprehend-review-analysis/backend
 
-**Step 1:** Open the `.env` file in the backend directory (`courses/01-aws-comprehend-review-analysis/backend/.env`)
+# Create .env file
+touch .env
+```
 
-**Step 2:** Add the AWS configuration fields:
+**Step 2:** Open the `.env` file and add the configuration:
 
 ```bash
 # courses/01-aws-comprehend-review-analysis/backend/.env
@@ -482,6 +506,10 @@ S3_BUCKET_NAME=
 S3_UPLOAD_FOLDER=
 S3_RESULTS_FOLDER=
 ```
+
+**Note:** If `PORT` is not set, the backend uses 3001 as the default port. Otherwise, it uses the port number specified here.
+
+**Note:** `AWS_REGION=us-east-1` should reflect your AWS region. If you're using a different region, update this value accordingly.
 
 <sub style="color: #9CA3AF">Video instruction: [Switch back to AWS Console IAM tab with access keys]</sub>
 
@@ -631,6 +659,18 @@ Perfect! Our backend is now fully configured with AWS credentials and the S3 buc
 
 <sub style="color: #9CA3AF">Video instruction: [Save .env file]</sub>
 
+**Step 5:** Restart the backend to pick up the new `.env` configuration.
+
+<sub style="color: #9CA3AF">Video instruction: [Switch to terminal where backend is running]</sub>
+
+Stop the backend with `Ctrl+C`, then start it again:
+
+```bash
+npm start
+```
+
+<sub style="color: #9CA3AF">Video instruction: [Show terminal output: "Server running on port 3001"]</sub>
+
 Now let's test if our backend can authenticate with AWS.
 
 <sub style="color: #9CA3AF">Video instruction: [Switch to browser with frontend open]</sub>
@@ -657,7 +697,7 @@ Now let's set up the AWS infrastructure to analyze these reviews and store the r
 
 <sub style="color: #9CA3AF">Video instruction: [Show AWS Infrastructure flowchart from README]</sub>
 
-Before we start building, let's walk through exactly what happens when a user uploads a review file. I'll show you each AWS service in action on the AWS dashboard.
+Before we start building, let's walk through exactly what happens when a user uploads a review file. I'll show you each AWS service in action on the AWS dashboard. Remember, this session is information - so you can sit back, sip on your coffee, and just watch.
 
 <sub style="color: #9CA3AF">Video instruction: [Switch to browser with frontend at localhost:5173]</sub>
 
@@ -720,6 +760,12 @@ SQS stands for Simple Queue Service. It's a fully managed message queuing servic
 - **Scalable**: Handles from 1 to millions of messages per second
 - **Decoupling**: Sender and receiver don't need to interact at the same time
 
+**What could go wrong without SQS?**
+
+Imagine our enterprise application without SQS - S3 directly triggers Lambda when a file is uploaded. During Black Friday, 10,000 customers upload reviews simultaneously. Lambda tries to spin up 10,000 instances at once, hits AWS account limits, and starts rejecting requests. Result? Hundreds of uploaded files never get processed. Customers complain. Data is lost. Your manager is not happy.
+
+With SQS, those 10,000 upload events go into the queue. Lambda processes them at a steady, manageable rate - maybe 100 at a time. Every file eventually gets processed. No data loss. No angry customers. This is why enterprise applications use queues.
+
 **Example 1: Order Processing**
 An e-commerce site receives thousands of orders per second during Black Friday. Instead of processing them immediately (which could crash the system), orders are sent to an SQS queue. Worker servers pick up orders from the queue at their own pace, ensuring no orders are lost even during traffic spikes.
 
@@ -779,7 +825,7 @@ See this trigger? That's the connection between SQS and Lambda. Lambda automatic
 
 <sub style="color: #9CA3AF">Video instruction: [Click on Configuration → Permissions, show IAM role]</sub>
 
-**Step 4: IAM Role** - This role gives Lambda permission to read from S3, receive messages from SQS, call Comprehend, and write results back to S3.
+**Step 4: IAM Role** - This role gives Lambda permission to read from S3, receive messages from SQS, call Comprehend, and write results back to S3. Here's an important AWS principle: services can't access each other by default. You must explicitly grant permissions. In this case, we're giving Lambda the permissions it needs to interact with S3, SQS, and Comprehend.
 
 <sub style="color: #9CA3AF">Video instruction: [PAUSE - Show popup overlay explaining IAM]</sub>
 
