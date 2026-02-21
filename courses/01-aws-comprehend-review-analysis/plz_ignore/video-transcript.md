@@ -1221,8 +1221,38 @@ The complete pipeline is working. From upload to analysis to visualization - ful
 
 Congratulations! You've just built an enterprise-grade, production-ready AI analysis pipeline on AWS.
 
----
+## Claim Your Reward
 
-**Author**: Darius Arian  
-**YouTube Channel**: https://www.youtube.com/@learn_ai_enterprise_careers  
-**GitHub Repository**: https://github.com/darius-arian/learn_ai_enterprise_careers
+<sub style="color: #9CA3AF">Video instruction: [Show celebration animation or confetti effect]</sub>
+
+Remember that reward you wrote down at the beginning? The one you promised yourself when you completed this course?
+
+**Go claim it. Right now.**
+
+This is how you close the habit loop. You saw the cue, you did the routine, now you get the reward. This is what makes learning stick. This is what builds the discipline that will get you that 10K job.
+
+Whether it's a nice dinner, a new gadget, a weekend trip, or just some well-deserved rest - honor your commitment to yourself. You earned it.
+
+## What's Next: Episode 2
+
+<sub style="color: #9CA3AF">Video instruction: [Show Episode 2 thumbnail or preview]</sub>
+
+In this episode, we built a complete serverless pipeline and used AWS Comprehend to analyze reviews. But we only scratched the surface of what Comprehend can do.
+
+**Episode 2: AWS Comprehend Deep-Dive** takes you through every major NLP feature that Comprehend offers - hands-on, using the AWS Console. You'll learn:
+
+- **Language Detection** - Identify 100+ languages automatically
+- **Advanced Sentiment Analysis** - Beyond positive/negative, understand mixed emotions
+- **Entity Recognition** - Extract people, places, organizations, dates, and more
+- **Key Phrase Extraction** - Identify the most important topics in text
+- **Syntax Analysis** - Part-of-speech tagging and grammatical structure
+- **Targeted Sentiment** - Understand sentiment toward specific features or entities
+- **PII Detection and Redaction** - Protect sensitive data and comply with regulations
+- **Topic Modeling** - Discover hidden themes in large document collections
+- **Custom Classification** - Train models for your specific use cases
+- **Custom Entity Recognition** - Detect domain-specific entities
+
+This is the deep technical knowledge that separates junior developers from senior engineers. The kind of expertise that companies pay premium salaries for.
+
+If you want to truly master AWS Comprehend and add enterprise-grade NLP skills to your toolkit, check out Episode 2. I'll see you there.
+
