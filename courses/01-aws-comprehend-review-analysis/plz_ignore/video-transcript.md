@@ -172,6 +172,9 @@ cd learn_ai_enterprise_careers/courses/01-aws-comprehend-review-analysis
 **Note:** If you get a "command not found: git" error, you need to install Git first:
 
 **For macOS:**
+
+macOS comes with Git preinstalled. Run `git --version` - if prompted, install Command Line Tools. For a newer version:
+
 ```bash
 brew install git
 ```
@@ -225,6 +228,8 @@ node --version
 npm --version
 ```
 
+**Note:** Alternatively, download from https://nodejs.org and install via GUI
+
 <sub style="color: #9CA3AF">Video instruction: [Show terminal executing installation commands]</sub>
 
 Now let's install the project dependencies and run the frontend. Here are the commands with brief explanations:
@@ -235,9 +240,11 @@ cd frontend
 **Changes directory** to the frontend folder where the React app lives.
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
 **Installs all dependencies** listed in package.json (React, Vite, Recharts, react-simple-maps, etc.). Downloads packages from npm registry into node_modules folder.
+
+**Note:** We use `--legacy-peer-deps` because the project uses React 19, but `react-simple-maps` currently only supports React 16-18. This flag bypasses the peer dependency check - the package works fine due to React's backward compatibility.
 
 ```bash
 npm run dev
@@ -251,6 +258,12 @@ The frontend is now running on http://localhost:5173
 <sub style="color: #9CA3AF">Video instruction: [Open browser to localhost:5173]</sub>
 
 Here's our interface. You can see the title "Episode 1: AWS Comprehend Review Analysis", the file upload area, and the Analyze button.
+
+<sub style="color: #9CA3AF">Video instruction: [Open browser DevTools - press F12 or right-click → Inspect]</sub>
+
+Let me show you something important - the browser DevTools. This is where you can see what's happening behind the scenes. Press F12 or right-click and select Inspect, then go to the Network tab. This shows all API calls between the frontend and backend.
+
+**Note:** Filter the Network tab to show only "Fetch/XHR" requests - these are the API calls we care about.
 
 <sub style="color: #9CA3AF">Video instruction: [Navigate to data folder and show sample review file]</sub>
 
@@ -266,7 +279,7 @@ And... we get an error. That's expected - our backend isn't running yet. Don't w
 
 <sub style="color: #9CA3AF">Video instruction: [Change camera to Darius]</sub>
 
-**💡 ProTip:** Don't worry if some of this feels overwhelming - just follow along step by step. You don't need to understand everything right now. We'll build understanding as we go.
+**Note:** Don't worry if some of this feels overwhelming - just follow along step by step. You don't need to understand everything right now. We'll build understanding as we go.
 
 <sub style="color: #9CA3AF">Video instruction: [Open new terminal window, navigate to backend directory]</sub>
 
@@ -278,7 +291,9 @@ Now let's set up the backend. Our backend uses:
 - **dotenv** - Environment variable management
 - **CORS** - Cross-origin resource sharing
 
-The dependencies are already listed in package.json, so we just need to install them:
+The dependencies are already listed in package.json, so we just need to install them.
+
+**Note:** Run these commands from the course root folder (`01-aws-comprehend-review-analysis`). If you're still in the `frontend` folder, navigate back with `cd ..`
 
 ```bash
 cd backend
@@ -295,48 +310,13 @@ npm start
 
 <sub style="color: #9CA3AF">Video instruction: [Show terminal output: "Server running on port 3001"]</sub>
 
-Wait - we're getting an error. The backend is trying to read the PORT from environment variables, but we haven't configured that yet.
+Perfect! Backend is running on port 3001 (the default port). 
 
-Let's create a `.env` file for our backend configuration. The `.env` file stores sensitive information like API keys and credentials - keeping them separate from your code and out of version control. That's why the `.env` file is not available in our Git repository.
-
-**Note:** We've included a `.env.example` file in the codebase as a template showing what variables you need to configure.
-
-**Step 1:** In the backend directory, create a new file called `.env`:
-
-```bash
-# Navigate to backend directory from project root
-cd courses/01-aws-comprehend-review-analysis/backend
-
-# Create .env file
-touch .env
-```
-
-**Step 2:** Open the `.env` file and add:
-
-```bash
-# courses/01-aws-comprehend-review-analysis/backend/.env
-PORT=3001
-```
-
-**PORT=3001** - The port number where our backend server listens for API calls from the frontend.
-
-**Step 3:** Save the file and run the backend again:
-
-```bash
-npm start
-```
-
-<sub style="color: #9CA3AF">Video instruction: [Show terminal output: "Server running on port 3001"]</sub>
-
-Perfect. Backend is running on port 3001. You can test it by opening http://localhost:3001 in your browser - you should see "Backend is running... :)"
+**Note:** If you want to change the default port from 3001 to something else, don't worry - we'll cover it soon.
 
 <sub style="color: #9CA3AF">Video instruction: [Switch back to browser with frontend at http://localhost:5173, refresh the page]</sub>
 
 Let's try uploading again.
-
-<sub style="color: #9CA3AF">Video instruction: [Open browser DevTools - press F12 or right-click → Inspect]</sub>
-
-Let me show you something important - the browser console. This is where you can see what's happening behind the scenes. Press F12 or right-click and select Inspect, then go to the Console tab.
 
 <sub style="color: #9CA3AF">Video instruction: [Upload review file, click Analyze]</sub>
 
@@ -348,9 +328,21 @@ Here you can see the API request our frontend sent to the backend. Click on the 
 
 See this POST request to http://localhost:3001/analyze? That's our frontend sending the file to the backend. Click on it to see the request and response details.
 
-<sub style="color: #9CA3AF">Video instruction: [Show complete system architecture workflow diagram]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Show backend terminal or check backend logs with error]</sub>
 
-The backend received our file and tried to upload it to S3... but we're getting an error. That's because we haven't configured AWS yet. The backend can't communicate with AWS services without proper credentials and infrastructure.
+We're getting an error. Let's check what happened. If you look at the backend logs, you'll see:
+
+```
+S3 upload error: AccessDenied: Access Denied
+...
+Code: 'AccessDenied'
+```
+
+**Why this error?**
+
+The backend is trying to upload the file to S3, but it doesn't have AWS credentials configured. Without credentials, AWS rejects the request with "Access Denied". We need to create an IAM user with S3 permissions and configure the backend with those credentials.
+
+<sub style="color: #9CA3AF">Video instruction: [Show complete system architecture workflow diagram]</sub>
 
 So now both frontend and backend are running and talking to each other, but we still need to set up the AWS infrastructure. Let's do that next.
 
