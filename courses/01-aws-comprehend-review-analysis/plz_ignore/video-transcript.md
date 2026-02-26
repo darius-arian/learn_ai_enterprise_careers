@@ -743,9 +743,9 @@ Now watch what happens. The moment this file appears, S3 has an event notificati
 
 <sub style="color: #9CA3AF">Video instruction: [Click on bucket name, go to Properties tab, scroll to Event notifications section]</sub>
 
-See this event notification? It's watching the uploads folder. When a `.json` file appears, it automatically sends a message to our SQS queue.
+See this event notification? It's configured with two filters: a prefix filter (`01-aws-comprehend-review-analysis/review-analysis-uploads/`) and a suffix filter (`.json`). This means only JSON files uploaded inside the `review-analysis-uploads/` folder will trigger the notification and send a message to our SQS queue. Files in other folders or non-JSON files are ignored.
 
-<sub style="color: #9CA3AF">Video instruction: [Navigate to SQS service in AWS Console]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Click on the destination link "review-analysis-queue" to navigate to the SQS queue]</sub>
 
 **Step 2: SQS Queue** - Here's our queue: `review-analysis-queue`.
 
@@ -778,9 +778,47 @@ In a microservices architecture, Service A needs to notify Service B about an ev
 **In Our Project:**
 SQS sits between S3 and Lambda. When a review file is uploaded to S3, S3 sends a notification message to this queue. Lambda polls the queue and processes messages one by one. If Lambda fails or times out, SQS automatically makes the message visible again for retry. This ensures every uploaded file gets processed, even during high traffic or temporary failures.
 
-<sub style="color: #9CA3AF">Video instruction: [Resume demo, click on the queue, show Messages available count]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Resume demo, show the queue details page - point to "Messages available", "Messages in flight", and "Messages delayed" counts in the Details section]</sub>
 
-See the message count? That's the notification from S3 saying "hey, a new file just arrived." SQS holds this message until Lambda is ready to process it.
+See the message counts in the Details section? "Messages available" shows messages waiting to be processed, "Messages in flight" shows messages currently being processed by Lambda, and "Messages delayed" shows messages waiting for their delay period. When S3 sends a notification, you'll see the count increase - that's S3 saying "hey, a new file just arrived." SQS holds these messages until Lambda is ready to process them.
+
+**Note:** In production with thousands of messages, these values would show real numbers - maybe 500 messages available, 100 in flight being processed. For our demo right now, all values show zero because we haven't uploaded any files yet. Let's see this in action.
+
+**Live Demo: Watching Messages Flow Through SQS**
+
+<sub style="color: #9CA3AF">Video instruction: [Click on "Send and receive messages" button at the top of the queue details page]</sub>
+
+This page lets us send and receive messages manually - perfect for testing and debugging.
+
+<sub style="color: #9CA3AF">Video instruction: [Scroll down to "Receive messages" section, click "Poll for messages" button]</sub>
+
+Now SQS is polling for messages. Notice it says "No messages. To view messages in the queue, poll for messages." The polling will run for 30 seconds by default, checking for any incoming messages.
+
+<sub style="color: #9CA3AF">Video instruction: [While polling is active, switch to browser tab with frontend at localhost:5173]</sub>
+
+Let's trigger a file upload while SQS is polling.
+
+<sub style="color: #9CA3AF">Video instruction: [Upload 1-iphone-17-reviews.json, click Analyze]</sub>
+
+File uploaded to S3. S3 should now send a notification to our SQS queue.
+
+<sub style="color: #9CA3AF">Video instruction: [Quickly switch back to AWS Console SQS "Send and receive messages" page]</sub>
+
+Watch the "Receive messages" section...
+
+<sub style="color: #9CA3AF">Video instruction: [Show message appearing in the Messages list with ID, Sent time, Size, and Receive count]</sub>
+
+There it is! A message just appeared. This is the S3 event notification. Click on the message to see its contents.
+
+<sub style="color: #9CA3AF">Video instruction: [Click on the message to expand details, show the Body section with JSON content]</sub>
+
+See this JSON? It contains the S3 event details - the bucket name (`review-analysis-bucket-darius`), the object key (`01-aws-comprehend-review-analysis/review-analysis-uploads/2026-02-23T16-30-45-123Z.json`), the event type (`ObjectCreated:Put`), and more. This is exactly what Lambda receives when it processes the message.
+
+**💡 ProTip:** In production, you wouldn't manually poll for messages like this - Lambda automatically polls the queue continuously. But this manual polling is incredibly useful for debugging. If messages aren't reaching Lambda, you can check here to see if they're even making it to the queue.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate back to queue details page or navigate to Lambda service]</sub>
+
+Now let's see what Lambda does with this message.
 
 <sub style="color: #9CA3AF">Video instruction: [Navigate to Lambda service in AWS Console]</sub>
 
