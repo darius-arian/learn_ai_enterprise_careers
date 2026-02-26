@@ -786,13 +786,27 @@ See the message counts in the Details section? "Messages available" shows messag
 
 **Live Demo: Watching Messages Flow Through SQS**
 
-<sub style="color: #9CA3AF">Video instruction: [Click on "Send and receive messages" button at the top of the queue details page]</sub>
+Before we can see messages in the queue, we need to temporarily disable Lambda. Why? Lambda is constantly polling this queue - the moment a message arrives, Lambda grabs it and processes it within 1-2 seconds. By the time we manually poll, the message is already gone. So let's pause Lambda temporarily to see the message flow.
 
-This page lets us send and receive messages manually - perfect for testing and debugging.
+**Note:** Don't worry if you're not familiar with Lambda yet - we'll explain it in detail in the next section. For now, just know it's the service that processes our messages.
 
-<sub style="color: #9CA3AF">Video instruction: [Scroll down to "Receive messages" section, click "Poll for messages" button]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Navigate to Lambda service, click on review-analysis-processor function]</sub>
 
-Now SQS is polling for messages. Notice it says "No messages. To view messages in the queue, poll for messages." The polling will run for 30 seconds by default, checking for any incoming messages.
+<sub style="color: #9CA3AF">Video instruction: [Click on Configuration tab, then click on Triggers in the left sidebar]</sub>
+
+Here's our SQS trigger. This is what makes Lambda automatically poll the queue.
+
+<sub style="color: #9CA3AF">Video instruction: [Select the SQS trigger checkbox, click Edit button]</sub>
+
+<sub style="color: #9CA3AF">Video instruction: [Uncheck "Activate trigger" checkbox, click Save]</sub>
+
+Lambda trigger is now disabled. Lambda will no longer poll the queue, so messages will stay there for us to see.
+
+**Note:** We'll re-enable this trigger after the demo. In production, you'd never disable this - Lambda should always be processing messages automatically. This kind of testing and debugging should be done in development or staging environments, never in production where real customer data is being processed.
+
+<sub style="color: #9CA3AF">Video instruction: [change tabs to "Send and receive messages", click "Poll for messages" button]</sub>
+
+Now SQS is polling for messages.
 
 <sub style="color: #9CA3AF">Video instruction: [While polling is active, switch to browser tab with frontend at localhost:5173]</sub>
 
@@ -816,11 +830,27 @@ See this JSON? It contains the S3 event details - the bucket name (`review-analy
 
 **💡 ProTip:** In production, you wouldn't manually poll for messages like this - Lambda automatically polls the queue continuously. But this manual polling is incredibly useful for debugging. If messages aren't reaching Lambda, you can check here to see if they're even making it to the queue.
 
-<sub style="color: #9CA3AF">Video instruction: [Navigate back to queue details page or navigate to Lambda service]</sub>
+**Re-enable Lambda Trigger**
+
+Now let's re-enable Lambda so it can process this message and any future messages automatically.
+
+<sub style="color: #9CA3AF">Video instruction: [Change chrome tab to lambda, click on review-analysis-processor function]</sub>
+
+<sub style="color: #9CA3AF">Video instruction: [select the SQS trigger checkbox, click Edit]</sub>
+
+<sub style="color: #9CA3AF">Video instruction: [Check "Activate trigger" checkbox, click Save]</sub>
+
+Lambda trigger is now re-enabled. Within a few seconds, Lambda will poll the queue, grab that message we just saw, process the review file, and delete the message.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate back to SQS queue, refresh the page or check Messages available count - should be 0 now]</sub>
+
+See? The message is gone. Lambda processed it. This is how the system works in production - messages flow through instantly.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate to Lambda service]</sub>
 
 Now let's see what Lambda does with this message.
 
-<sub style="color: #9CA3AF">Video instruction: [Navigate to Lambda service in AWS Console]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Navigate to Lambda service > review-analysis-processor in AWS Console]</sub>
 
 **Step 3: Lambda Function** - Here's our Lambda function: `review-analysis-processor`.
 
@@ -863,7 +893,7 @@ See this trigger? That's the connection between SQS and Lambda. Lambda automatic
 
 <sub style="color: #9CA3AF">Video instruction: [Click on Configuration → Permissions, show IAM role]</sub>
 
-**Step 4: IAM Role** - This role gives Lambda permission to read from S3, receive messages from SQS, call Comprehend, and write results back to S3. Here's an important AWS principle: services can't access each other by default. You must explicitly grant permissions. In this case, we're giving Lambda the permissions it needs to interact with S3, SQS, and Comprehend.
+**Step 4: IAM Role** - This role gives Lambda permission to read from S3, receive messages from SQS, call Comprehend, write results back to S3, and write logs to CloudWatch. Here's an important AWS principle: services can't access each other by default. You must explicitly grant permissions. In this case, we're giving Lambda the permissions it needs to interact with S3, SQS, Comprehend, and CloudWatch (for logging and monitoring).
 
 <sub style="color: #9CA3AF">Video instruction: [PAUSE - Show popup overlay explaining IAM]</sub>
 
@@ -890,15 +920,26 @@ Our Lambda function needs to interact with multiple AWS services: read files fro
 
 <sub style="color: #9CA3AF">Video instruction: [Resume demo, click on the role name to open IAM, show attached policies]</sub>
 
-See these policies? S3 access, SQS access, Comprehend access. Without these, Lambda can't do anything.
+See these policies? S3 access, SQS access, CloudWatch Logs access (for monitoring), and Comprehend access. Without these, Lambda can't do anything.
 
-<sub style="color: #9CA3AF">Video instruction: [Go back to Lambda function, click on Monitor tab, then View CloudWatch logs]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Go back to Lambda function, click on Monitor tab, then click "View CloudWatch logs" button]</sub>
+
+**Note:** CloudWatch is AWS's monitoring and logging service. Every time Lambda runs, it automatically sends logs to CloudWatch - things like print statements, errors, execution time, and memory usage. This is incredibly useful for debugging and monitoring your functions in production.
 
 **Step 5: Lambda Execution** - Let's check the logs to see what Lambda actually did.
 
-<sub style="color: #9CA3AF">Video instruction: [Click on latest log stream, show logs with Comprehend API calls]</sub>
+<sub style="color: #9CA3AF">Video instruction: [This opens CloudWatch Logs in a new tab. Click on the latest log stream to see recent execution logs]</sub>
 
-Here's the execution. Lambda downloaded the file from S3, parsed the reviews, and called AWS Comprehend seven times per review: language detection, sentiment analysis, key phrases, entities, syntax, targeted sentiment, and PII detection.
+Here's the execution log. You'll see several key events:
+
+- **INIT_START** - Lambda initializing the Python runtime
+- **START RequestId** - Lambda function execution begins
+- **"Processing file: ..."** - Our code's print statement showing which file is being processed
+- **"Analysis complete. Results saved to: ..."** - Our code confirming the analysis finished and where results were saved
+- **END RequestId** - Lambda function execution ends
+- **REPORT** - Performance metrics: Duration (how long it took), Memory Used, Billed Duration
+
+This shows Lambda downloaded the file from S3, parsed the reviews, called AWS Comprehend seven times per review (language detection, sentiment analysis, key phrases, entities, syntax, targeted sentiment, and PII detection), and saved the results back to S3. The entire process took about 17-18 seconds for this file.
 
 <sub style="color: #9CA3AF">Video instruction: [Navigate to Comprehend service in AWS Console]</sub>
 
@@ -925,13 +966,84 @@ A brand monitors Twitter mentions. Comprehend analyzes tweets in real-time to de
 A law firm processes thousands of legal documents. Comprehend extracts entities (people, organizations, dates), identifies key phrases (contract terms, clauses), and detects PII (personally identifiable information) for redaction. This automates hours of manual review work.
 
 **In Our Project:**
-Comprehend is the AI engine that analyzes product reviews. For each review, Lambda calls Comprehend seven times: language detection (is it English or Chinese?), sentiment analysis (positive, negative, neutral?), key phrase extraction (what topics are mentioned?), entity recognition (what products, locations, brands?), syntax analysis (grammatical structure), targeted sentiment (sentiment about specific features), and PII detection (any personal information?). All this happens in seconds without us training any models.
 
-<sub style="color: #9CA3AF">Video instruction: [Resume demo, show Comprehend dashboard, maybe click on Analysis jobs or Real-time analysis]</sub>
+Comprehend is the AI engine that analyzes product reviews. For each review, Lambda calls Comprehend **7 times**:
+
+1. **Language Detection** - Is it English or Chinese?
+2. **Sentiment Analysis** - Positive, negative, neutral, or mixed?
+3. **Key Phrase Extraction** - What topics are mentioned?
+4. **Entity Recognition** - What products, locations, brands?
+5. **Syntax Analysis** - Grammatical structure
+6. **Targeted Sentiment** - Sentiment about specific features
+7. **PII Detection** - Any personal information?
+
+All this happens in seconds without us training any models.
+
+**Comprehend Dashboard Demo**
+
+Let's see Comprehend in action using the AWS Console's Real-time analysis feature.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate to Comprehend service, click on "Real-time analysis" in left sidebar]</sub>
+
+Here's the Real-time analysis page. AWS provides default sample text to demonstrate Comprehend's capabilities.
+
+<sub style="color: #9CA3AF">Video instruction: [Show the default input text in the text box]</sub>
+
+Let's analyze this text and see what insights Comprehend extracts. Click "Analyze".
+
+<sub style="color: #9CA3AF">Video instruction: [Click Analyze button, show the Insights section appearing below]</sub>
+
+Now we have the insights. Let's go through each analysis type:
+
+**Entities**
+
+<sub style="color: #9CA3AF">Video instruction: [Click on Entities tab, show the results]</sub>
+
+Entities are real-world objects mentioned in the text - people, places, organizations, dates, quantities, etc. Comprehend automatically identifies and categorizes them. For example, if the text mentions "Amazon" it recognizes it as an ORGANIZATION, or "Seattle" as a LOCATION. This is incredibly useful for extracting structured data from unstructured text.
+
+**Key Phrases**
+
+<sub style="color: #9CA3AF">Video instruction: [Click on Key phrases tab, show the results]</sub>
+
+Key phrases are the most important topics or concepts in the text. Comprehend extracts noun phrases that represent the main ideas. In product reviews, this might be "battery life", "camera quality", or "customer service". These help you understand what customers are talking about without reading every review.
+
+**Language**
+
+<sub style="color: #9CA3AF">Video instruction: [Click on Language tab, show the results]</sub>
+
+Language detection identifies which language the text is written in. Comprehend supports 100+ languages and provides a confidence score. This is essential for multi-language applications - you can automatically route reviews to the right language-specific processing pipeline.
+
+**PII (Personally Identifiable Information)**
+
+<sub style="color: #9CA3AF">Video instruction: [Click on PII tab, show the results]</sub>
+
+PII detection identifies sensitive personal information like names, addresses, phone numbers, email addresses, credit card numbers, social security numbers, etc. This is critical for compliance with regulations like GDPR and HIPAA. You can use this to automatically redact sensitive information before storing or displaying data.
+
+**Sentiment**
+
+<sub style="color: #9CA3AF">Video instruction: [Click on Sentiment tab, show the results]</sub>
+
+Sentiment analysis determines the overall emotional tone of the text - POSITIVE, NEGATIVE, NEUTRAL, or MIXED. Comprehend provides confidence scores for each sentiment. In our project, this tells us whether customers are happy or unhappy with the product. You can see percentages like 85% positive, 10% neutral, 5% negative.
+
+**Targeted Sentiment**
+
+<sub style="color: #9CA3AF">Video instruction: [Click on Targeted sentiment tab, show the results]</sub>
+
+Targeted sentiment goes deeper - it identifies sentiment toward specific entities or aspects mentioned in the text. For example, a review might be overall positive but negative about "battery life" specifically. This gives you granular insights into what customers like and dislike about different features.
+
+**Syntax**
+
+<sub style="color: #9CA3AF">Video instruction: [Click on Syntax tab, show the results]</sub>
+
+Syntax analysis breaks down the grammatical structure of the text - identifying parts of speech (nouns, verbs, adjectives, etc.) and their relationships. Each word gets tagged with its part of speech. This is useful for advanced text processing, like extracting specific types of information or understanding sentence structure.
+
+<sub style="color: #9CA3AF">Video instruction: [Navigate back to S3, go to analysis-results folder]</sub>
+
+This is exactly what our Lambda function does for each review - all 7 of these analyses automatically. The results get saved to S3, and our frontend displays them with charts and visualizations.
 
 Comprehend processes the text and returns structured insights - sentiment scores, entities, key phrases, everything.
 
-<sub style="color: #9CA3AF">Video instruction: [Navigate back to S3, go to analysis-results folder]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Still in s3 > analysis-results folder]</sub>
 
 **Step 7: Results Storage** - Lambda takes all those Comprehend results and saves them back to S3 in the `analysis-results/` folder with a matching timestamp: `analysis-2026-02-18T13-30-45-123Z.json`.
 
@@ -1062,9 +1174,9 @@ Before we create the Lambda function, we need to create an IAM role that gives L
 
 **Step 6:** Now we need to attach policies. Search for and select these four policies:
 
-1. **AWSLambdaBasicExecutionRole** - Allows Lambda to write logs to CloudWatch
-2. **AmazonS3FullAccess** - Allows Lambda to read from uploads folder and write to results folder
-3. **AmazonSQSFullAccess** - Allows Lambda to receive and delete messages from the queue
+1. **AmazonS3FullAccess** - Allows Lambda to read from uploads folder and write to results folder
+2. **AmazonSQSFullAccess** - Allows Lambda to receive and delete messages from the queue
+3. **AWSLambdaBasicExecutionRole** - Allows Lambda to write logs to CloudWatch
 4. **ComprehendFullAccess** - Allows Lambda to call all AWS Comprehend APIs
 
 <sub style="color: #9CA3AF">Video instruction: [Search and check each policy one by one]</sub>
