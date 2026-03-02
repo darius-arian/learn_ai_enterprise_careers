@@ -16,8 +16,8 @@ const s3Client = new S3Client({
 });
 
 // S3 folder paths
-const S3_UPLOAD_FOLDER = process.env.S3_UPLOAD_FOLDER || "01-aws-comprehend-review-analysis/review-analysis-uploads";
-const S3_RESULTS_FOLDER = process.env.S3_RESULTS_FOLDER || "01-aws-comprehend-review-analysis/analysis-results";
+const S3_UPLOAD_FOLDER = process.env.S3_UPLOAD_FOLDER || "01-enterprise-ai-infrastructure/review-analysis-uploads";
+const S3_RESULTS_FOLDER = process.env.S3_RESULTS_FOLDER || "01-enterprise-ai-infrastructure/analysis-results";
 
 app.use(cors());
 

@@ -1,7 +1,7 @@
-# Context File for Course 01: AWS Comprehend Review Analysis
+# Context File for Course 01: Enterprise AI Infrastructure on AWS
 
 ## Project Location
-`~/darius_ai/p/learn_ai_enterprise_careers/courses/01-aws-comprehend-review-analysis`
+`~/darius_ai/p/learn_ai_enterprise_careers/courses/01-enterprise-ai-infrastructure`
 
 ## Documentation Files
 - **This File**: `plz_ignore/kiro-context.txt` - Project configuration and setup
@@ -17,8 +17,8 @@ React Frontend → Express Backend → S3 → SQS → Lambda → AWS Comprehend 
 
 ## AWS Infrastructure (DEPLOYED & OPERATIONAL)
 - **S3 Bucket**: `review-analysis-bucket-darius`
-  - `01-aws-comprehend-review-analysis/review-analysis-uploads/` - uploaded JSON files
-  - `01-aws-comprehend-review-analysis/analysis-results/` - Comprehend analysis results
+  - `01-enterprise-ai-infrastructure/review-analysis-uploads/` - uploaded JSON files
+  - `01-enterprise-ai-infrastructure/analysis-results/` - Comprehend analysis results
 - **SQS Queue**: `review-analysis-queue`
 - **Lambda Function**: `review-analysis-processor` (Python 3.9)
 - **IAM Role**: `review-analysis-lambda-role`

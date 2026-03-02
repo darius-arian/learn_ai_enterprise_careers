@@ -151,7 +151,7 @@ function App() {
       boxSizing: 'border-box',
       overflowX: 'hidden'
     }}>
-      <h1 style={{ fontSize: 'clamp(1.5rem, 5vw, 2rem)', wordBreak: 'break-word' }}>Episode 1: AWS Comprehend Review Analysis</h1>
+      <h1 style={{ fontSize: 'clamp(1.5rem, 5vw, 2rem)', wordBreak: 'break-word' }}>Episode 1: Enterprise AI Infrastructure on AWS</h1>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
         <p style={{ fontSize: '1rem', color: '#fff', margin: 0 }}>By Darius Arian</p>
         <div style={{ display: 'flex', gap: '12px' }}>

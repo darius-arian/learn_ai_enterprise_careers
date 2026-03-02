@@ -1,4 +1,4 @@
-# Episode 1: AWS Comprehend Review Analysis - Video Transcript
+# Episode 1: Enterprise AI Infrastructure on AWS - Video Transcript
 
 ## The Pitch
 
@@ -170,7 +170,7 @@ Let's clone it to your local machine. Open your terminal and run:
 
 ```bash
 git clone https://github.com/darius-arian/learn_ai_enterprise_careers.git
-cd learn_ai_enterprise_careers/courses/01-aws-comprehend-review-analysis
+cd learn_ai_enterprise_careers/courses/01-enterprise-ai-infrastructure
 ```
 
 **Note:** If you get a "command not found: git" error, you need to install Git first:
@@ -261,7 +261,7 @@ The frontend is now running on http://localhost:5173
 
 <sub style="color: #9CA3AF">Video instruction: [Open browser to localhost:5173]</sub>
 
-Here's our interface. You can see the title "Episode 1: AWS Comprehend Review Analysis", the file upload area, and the Analyze button.
+Here's our interface. You can see the title "Episode 1: Enterprise AI Infrastructure on AWS", the file upload area, and the Analyze button.
 
 <sub style="color: #9CA3AF">Video instruction: [Open browser DevTools - press F12 or right-click → Inspect]</sub>
 
@@ -301,7 +301,7 @@ Now let's set up the backend. Our backend uses:
 
 The dependencies are already listed in package.json, so we just need to install them.
 
-**Note:** Run these commands from the course root folder (`01-aws-comprehend-review-analysis`). If you're still in the `frontend` folder, navigate back with `cd ..`
+**Note:** Run these commands from the course root folder (`01-enterprise-ai-infrastructure`). If you're still in the `frontend` folder, navigate back with `cd ..`
 
 ```bash
 cd backend
@@ -488,7 +488,7 @@ Now we need to configure the backend with AWS credentials. We'll create a `.env`
 
 ```bash
 # Navigate to backend directory from project root
-cd courses/01-aws-comprehend-review-analysis/backend
+cd courses/01-enterprise-ai-infrastructure/backend
 
 # Create .env file
 touch .env
@@ -497,7 +497,7 @@ touch .env
 **Step 2:** Open the `.env` file and add the configuration:
 
 ```bash
-# courses/01-aws-comprehend-review-analysis/backend/.env
+# courses/01-enterprise-ai-infrastructure/backend/.env
 PORT=3001
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
@@ -591,9 +591,9 @@ Perfect! Bucket created.
 
 <sub style="color: #9CA3AF">Video instruction: [Click Create folder button]</sub>
 
-**Step 8:** For the folder name, enter: **01-aws-comprehend-review-analysis**
+**Step 8:** For the folder name, enter: **01-enterprise-ai-infrastructure**
 
-<sub style="color: #9CA3AF">Video instruction: [Type folder name: 01-aws-comprehend-review-analysis]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Type folder name: 01-enterprise-ai-infrastructure]</sub>
 
 Click **Create folder**.
 
@@ -601,7 +601,7 @@ Click **Create folder**.
 
 **Step 9:** Now click into that folder we just created.
 
-<sub style="color: #9CA3AF">Video instruction: [Click on 01-aws-comprehend-review-analysis folder]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Click on 01-enterprise-ai-infrastructure folder]</sub>
 
 **Step 10:** Inside this folder, we need to create two more folders. Click **Create folder** again.
 
@@ -623,7 +623,7 @@ Second folder name: **analysis-results**
 
 This is where Comprehend analysis results will be stored.
 
-<sub style="color: #9CA3AF">Video instruction: [Show final folder structure: 01-aws-comprehend-review-analysis/review-analysis-uploads/ and 01-aws-comprehend-review-analysis/analysis-results/]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Show final folder structure: 01-enterprise-ai-infrastructure/review-analysis-uploads/ and 01-enterprise-ai-infrastructure/analysis-results/]</sub>
 
 Perfect! Our S3 bucket structure is ready.
 
@@ -643,8 +643,8 @@ AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_HERE
 AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY_HERE
 AWS_REGION=us-east-1
 S3_BUCKET_NAME=review-analysis-bucket-darius
-S3_UPLOAD_FOLDER=01-aws-comprehend-review-analysis/review-analysis-uploads
-S3_RESULTS_FOLDER=01-aws-comprehend-review-analysis/analysis-results
+S3_UPLOAD_FOLDER=01-enterprise-ai-infrastructure/review-analysis-uploads
+S3_RESULTS_FOLDER=01-enterprise-ai-infrastructure/analysis-results
 ```
 
 **Note:** `AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_HERE` and `AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY_HERE` should have actual values you got from previous steps, not the dummy data.
@@ -683,7 +683,7 @@ Perfect! Our backend can now connect to AWS via the AWS SDK and upload the file 
 
 Let's confirm the file was actually uploaded to the folder.
 
-<sub style="color: #9CA3AF">Video instruction: [Switch to AWS Console, navigate to S3, open review-analysis-bucket-darius → 01-aws-comprehend-review-analysis → review-analysis-uploads folder, show uploaded file with timestamp name like 2026-02-03T17-45-51-009Z.json]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Switch to AWS Console, navigate to S3, open review-analysis-bucket-darius → 01-enterprise-ai-infrastructure → review-analysis-uploads folder, show uploaded file with timestamp name like 2026-02-03T17-45-51-009Z.json]</sub>
 
 There it is - our review file successfully uploaded to the review-analysis-uploads folder in S3. Notice how the backend automatically renamed it with a timestamp: `2026-02-03T17-45-51-009Z.json`. This ensures every upload has a unique name.
 
@@ -743,7 +743,7 @@ Now watch what happens. The moment this file appears, S3 has an event notificati
 
 <sub style="color: #9CA3AF">Video instruction: [Click on bucket name, go to Properties tab, scroll to Event notifications section]</sub>
 
-See this event notification? It's configured with two filters: a prefix filter (`01-aws-comprehend-review-analysis/review-analysis-uploads/`) and a suffix filter (`.json`). This means only JSON files uploaded inside the `review-analysis-uploads/` folder will trigger the notification and send a message to our SQS queue. Files in other folders or non-JSON files are ignored.
+See this event notification? It's configured with two filters: a prefix filter (`01-enterprise-ai-infrastructure/review-analysis-uploads/`) and a suffix filter (`.json`). This means only JSON files uploaded inside the `review-analysis-uploads/` folder will trigger the notification and send a message to our SQS queue. Files in other folders or non-JSON files are ignored.
 
 <sub style="color: #9CA3AF">Video instruction: [Click on the destination link "review-analysis-queue" to navigate to the SQS queue]</sub>
 
@@ -826,7 +826,7 @@ There it is! A message just appeared. This is the S3 event notification. Click o
 
 <sub style="color: #9CA3AF">Video instruction: [Click on the message to expand details, show the Body section with JSON content]</sub>
 
-See this JSON? It contains the S3 event details - the bucket name (`review-analysis-bucket-darius`), the object key (`01-aws-comprehend-review-analysis/review-analysis-uploads/2026-02-23T16-30-45-123Z.json`), the event type (`ObjectCreated:Put`), and more. This is exactly what Lambda receives when it processes the message.
+See this JSON? It contains the S3 event details - the bucket name (`review-analysis-bucket-darius`), the object key (`01-enterprise-ai-infrastructure/review-analysis-uploads/2026-02-23T16-30-45-123Z.json`), the event type (`ObjectCreated:Put`), and more. This is exactly what Lambda receives when it processes the message.
 
 **💡 ProTip:** In production, you wouldn't manually poll for messages like this - Lambda automatically polls the queue continuously. But this manual polling is incredibly useful for debugging. If messages aren't reaching Lambda, you can check here to see if they're even making it to the queue.
 
@@ -1245,11 +1245,11 @@ Great! Function created. Now we need to add the code.
 
 <sub style="color: #9CA3AF">Video instruction: [Show Lambda code editor]</sub>
 
-The complete Lambda function code is available in the project repository at `courses/01-aws-comprehend-review-analysis/lambda_function.py`. Let me walk you through what this code does.
+The complete Lambda function code is available in the project repository at `courses/01-enterprise-ai-infrastructure/lambda_function.py`. Let me walk you through what this code does.
 
 **Note:** I'll just briefly explain the code here. If you need a better understanding, copy-paste the code to your favorite AI assistant for a detailed explanation.
 
-<sub style="color: #9CA3AF">Video instruction: [Open courses/01-aws-comprehend-review-analysis/lambda_function.py file from project in VS Code]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Open courses/01-enterprise-ai-infrastructure/lambda_function.py file from project in VS Code]</sub>
 
 **Lambda Function Structure:**
 
@@ -1303,7 +1303,7 @@ For each review, we call all 7 Comprehend APIs:
 **6. Save Results to S3** (lines 93-110)
 ```python
 timestamp_from_upload = uploaded_filename.replace('.json', '')
-result_key = f"01-aws-comprehend-review-analysis/analysis-results/analysis-{timestamp_from_upload}.json"
+result_key = f"01-enterprise-ai-infrastructure/analysis-results/analysis-{timestamp_from_upload}.json"
 s3.put_object(Bucket=bucket, Key=result_key, Body=json.dumps(result_data, indent=2))
 ```
 Extracts the timestamp from the uploaded filename, creates a matching result filename, and saves the complete analysis back to S3 in the `analysis-results/` folder.
@@ -1396,7 +1396,7 @@ Now for the final piece - configuring S3 to send notifications to SQS when files
 
 **Note:** Please use the same naming as shown in this tutorial for consistency.
 
-**Step 6:** For prefix, enter: **01-aws-comprehend-review-analysis/review-analysis-uploads/**
+**Step 6:** For prefix, enter: **01-enterprise-ai-infrastructure/review-analysis-uploads/**
 
 This ensures the notification only triggers for files in the uploads folder. Remember, we have two folders: `review-analysis-uploads/` for incoming files and `analysis-results/` for processed results - we only want to trigger on uploads.
 
@@ -1494,9 +1494,9 @@ Whether it's a nice dinner, a new gadget, a weekend trip, or just some well-dese
 
 <sub style="color: #9CA3AF">Video instruction: [Show Episode 2 thumbnail or preview]</sub>
 
-In this episode, we built a complete serverless pipeline and used AWS Comprehend to analyze reviews. But we only scratched the surface of what Comprehend can do.
+In this episode, we built a complete serverless AI infrastructure on AWS - from frontend to backend to cloud services. We covered S3, SQS, Lambda, IAM, and used AWS Comprehend for AI-powered text analysis. But we only scratched the surface of what Comprehend can do.
 
-**Episode 2: AWS Comprehend Deep-Dive** takes you through every major NLP feature that Comprehend offers - hands-on, using the AWS Console. You'll learn:
+**Episode 2: Deep Dive into AWS Comprehend** takes you through every major NLP feature that Comprehend offers - hands-on, using the AWS Console. You'll learn:
 
 - **Language Detection** - Identify 100+ languages automatically
 - **Advanced Sentiment Analysis** - Beyond positive/negative, understand mixed emotions

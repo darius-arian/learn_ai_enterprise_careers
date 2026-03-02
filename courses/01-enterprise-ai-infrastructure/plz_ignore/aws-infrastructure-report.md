@@ -16,8 +16,8 @@ S3 Upload → S3 Event Notification → SQS Queue → Lambda Function → AWS Co
 **Region:** us-east-1
 
 ### Folder Structure
-- `01-aws-comprehend-review-analysis/review-analysis-uploads/` - Input folder for uploaded review files
-- `01-aws-comprehend-review-analysis/analysis-results/` - Output folder for Comprehend analysis results
+- `01-enterprise-ai-infrastructure/review-analysis-uploads/` - Input folder for uploaded review files
+- `01-enterprise-ai-infrastructure/analysis-results/` - Output folder for Comprehend analysis results
 
 ### Event Notification Configuration
 **Notification ID:** `review-upload-notification`  
@@ -25,7 +25,7 @@ S3 Upload → S3 Event Notification → SQS Queue → Lambda Function → AWS Co
 **Target:** SQS Queue (`review-analysis-queue`)
 
 **Filters:**
-- **Prefix:** `01-aws-comprehend-review-analysis/review-analysis-uploads/`
+- **Prefix:** `01-enterprise-ai-infrastructure/review-analysis-uploads/`
 - **Suffix:** `.json`
 
 **How it works:** When a `.json` file is uploaded to the `review-analysis-uploads/` folder, S3 automatically sends a notification message to the SQS queue.

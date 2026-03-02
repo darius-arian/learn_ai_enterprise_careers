@@ -95,7 +95,7 @@ def lambda_handler(event, context):
             # Extract timestamp from uploaded filename (e.g., 2026-02-05T15-12-05-487Z.json)
             uploaded_filename = key.split('/')[-1]  # Get just the filename
             timestamp_from_upload = uploaded_filename.replace('.json', '')  # Remove .json extension
-            result_key = f"01-aws-comprehend-review-analysis/analysis-results/analysis-{timestamp_from_upload}.json"
+            result_key = f"01-enterprise-ai-infrastructure/analysis-results/analysis-{timestamp_from_upload}.json"
             
             result_data = {
                 'source_file': key,

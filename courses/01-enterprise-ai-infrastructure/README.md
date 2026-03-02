@@ -1,8 +1,8 @@
-﻿# AWS Comprehend Deep Dive: Enterprise-Scale Product Review Analysis
+# Enterprise AI Infrastructure on AWS
 
-## Video 01: Complete Serverless Review Analysis Pipeline
+## Episode 1: Building a Serverless AI Pipeline
 
-This project demonstrates a full-stack, event-driven architecture for automated product review analysis using AWS Comprehend and modern web technologies.
+This project demonstrates how to build enterprise-grade AI infrastructure using AWS services. You'll learn to create a full-stack, event-driven serverless architecture for automated product review analysis - the same patterns used by companies processing millions of documents daily.
 
 ## Architecture Overview
 
@@ -116,7 +116,7 @@ graph TD
 
 ```
 review-analysis-bucket-darius/
-└── 01-aws-comprehend-review-analysis/
+└── 01-enterprise-ai-infrastructure/
     ├── review-analysis-uploads/     # Original JSON files
     └── analysis-results/            # Comprehend analysis results
 ```

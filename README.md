@@ -8,7 +8,7 @@ This repository contains course tutorial projects organized by course number:
 
 ### Course 01: AWS Comprehend Review Analysis
 
-**Project Path**: `courses/01-aws-comprehend-review-analysis/`
+**Project Path**: `courses/01-enterprise-ai-infrastructure/`
 
 An enterprise-scale product review analysis system using AWS Comprehend. This full-stack application demonstrates AWS AI services integration.
 
@@ -35,14 +35,14 @@ An enterprise-scale product review analysis system using AWS Comprehend. This fu
 
 **Frontend**:
 ```bash
-cd courses/01-aws-comprehend-review-analysis/frontend
+cd courses/01-enterprise-ai-infrastructure/frontend
 npm install
 npm run dev
 ```
 
 **Backend**:
 ```bash
-cd courses/01-aws-comprehend-review-analysis/backend
+cd courses/01-enterprise-ai-infrastructure/backend
 npm install
 npm start
 ```
