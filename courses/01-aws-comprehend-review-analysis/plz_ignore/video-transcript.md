@@ -1049,11 +1049,11 @@ Comprehend processes the text and returns structured insights - sentiment scores
 
 <sub style="color: #9CA3AF">Video instruction: [Show the result file in analysis-results folder, click to preview JSON]</sub>
 
-There's our analysis - complete with sentiment, entities, key phrases, everything.
+There's our analysis - complete with language_detection, sentiment, key phrases, everything.
 
-<sub style="color: #9CA3AF">Video instruction: [Switch back to frontend, click See Results]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Switch back to frontend, upload a file, wait, then click See Results]</sub>
 
-The frontend polls the backend, the backend retrieves this file from S3, and boom - results displayed with charts and visualizations.
+Let's try one more time. The frontend polls the backend, the backend retrieves this file from S3, and boom - results displayed with charts and visualizations.
 
 <sub style="color: #9CA3AF">Video instruction: [Show results with charts]</sub>
 
@@ -1164,9 +1164,7 @@ Before we create the Lambda function, we need to create an IAM role that gives L
 
 <sub style="color: #9CA3AF">Video instruction: [Click Create role]</sub>
 
-**Step 4:** For trusted entity type, select **AWS service**.
-
-<sub style="color: #9CA3AF">Video instruction: [Select AWS service]</sub>
+**Step 4:** For trusted entity type, leave it as **AWS service**.
 
 **Step 5:** For use case, select **Lambda**, then click **Next**.
 
@@ -1221,7 +1219,7 @@ Now let's create the Lambda function that processes the reviews.
 
 **Note:** Please use the same naming as shown in this tutorial. This function name will be referenced in CloudWatch logs and monitoring.
 
-**Step 5:** For runtime, select **Python 3.10** (or the latest Python 3.x version available).
+**Step 5:** For runtime, select **Python 3.14** (or the latest Python 3.x version available).
 
 <sub style="color: #9CA3AF">Video instruction: [Select Python 3.10 from dropdown]</sub>
 
@@ -1247,15 +1245,82 @@ Great! Function created. Now we need to add the code.
 
 <sub style="color: #9CA3AF">Video instruction: [Show Lambda code editor]</sub>
 
-The complete Lambda function code is available in the project repository at `courses/01-aws-comprehend-review-analysis/lambda_function.py`. This code handles the entire processing pipeline: receiving SQS messages, downloading files from S3, calling all 7 Comprehend APIs, and saving results back to S3.
+The complete Lambda function code is available in the project repository at `courses/01-aws-comprehend-review-analysis/lambda_function.py`. Let me walk you through what this code does.
 
-<sub style="color: #9CA3AF">Video instruction: [Open courses/01-aws-comprehend-review-analysis/lambda_function.py file from project, show the code briefly]</sub>
+**Note:** I'll just briefly explain the code here. If you need a better understanding, copy-paste the code to your favorite AI assistant for a detailed explanation.
 
-Copy the entire contents of `lambda_function.py` and paste it into the Lambda code editor, replacing the default code.
+<sub style="color: #9CA3AF">Video instruction: [Open courses/01-aws-comprehend-review-analysis/lambda_function.py file from project in VS Code]</sub>
 
-<sub style="color: #9CA3AF">Video instruction: [Show code being pasted into Lambda editor]</sub>
+**Lambda Function Structure:**
 
-**Note:** We'll explain this code in detail in a later section. For now, just know it processes reviews through Comprehend and saves the results.
+**1. Imports and AWS Clients** (lines 1-7)
+```python
+import json, boto3, urllib.parse
+from datetime import datetime
+
+s3 = boto3.client('s3')
+comprehend = boto3.client('comprehend')
+```
+We import necessary libraries and initialize AWS service clients for S3 and Comprehend.
+
+**2. Parse SQS Message** (lines 12-16)
+```python
+for record in event['Records']:
+    s3_event = json.loads(record['body'])
+    bucket = s3_event['Records'][0]['s3']['bucket']['name']
+    key = urllib.parse.unquote_plus(s3_event['Records'][0]['s3']['object']['key'])
+```
+Lambda receives the SQS message, extracts the S3 event details, and gets the bucket name and file path.
+
+**3. Download File from S3** (lines 20-23)
+```python
+response = s3.get_object(Bucket=bucket, Key=key)
+file_content = response['Body'].read().decode('utf-8')
+reviews_data = json.loads(file_content)
+```
+Downloads the review file from S3 and parses the JSON content.
+
+**4. Handle Different JSON Structures** (lines 28-33)
+```python
+reviews = []
+if 'reviews' in reviews_data:
+    reviews = reviews_data['reviews']
+elif 'product' in reviews_data and 'reviews' in reviews_data['product']:
+    reviews = reviews_data['product']['reviews']
+```
+Supports multiple JSON formats - reviews can be at the root level or nested under a product object.
+
+**5. Call 7 Comprehend APIs** (lines 35-90)
+For each review, we call all 7 Comprehend APIs:
+- `detect_dominant_language` - Identifies the language
+- `detect_sentiment` - Overall sentiment (positive/negative/neutral/mixed)
+- `detect_key_phrases` - Important topics mentioned
+- `detect_entities` - People, places, organizations, products
+- `detect_syntax` - Grammatical structure and parts of speech
+- `detect_targeted_sentiment` - Sentiment toward specific entities
+- `detect_pii_entities` - Personal identifiable information
+
+**6. Save Results to S3** (lines 93-110)
+```python
+timestamp_from_upload = uploaded_filename.replace('.json', '')
+result_key = f"01-aws-comprehend-review-analysis/analysis-results/analysis-{timestamp_from_upload}.json"
+s3.put_object(Bucket=bucket, Key=result_key, Body=json.dumps(result_data, indent=2))
+```
+Extracts the timestamp from the uploaded filename, creates a matching result filename, and saves the complete analysis back to S3 in the `analysis-results/` folder.
+
+**7. Error Handling** (lines 118-120)
+```python
+except Exception as e:
+    print(f"Error: {str(e)}")
+    raise e
+```
+Logs any errors to CloudWatch and re-raises the exception so SQS can retry if needed.
+
+<sub style="color: #9CA3AF">Video instruction: [Scroll through the code in VS Code, highlighting each section as explained]</sub>
+
+Now let's copy this code into the Lambda console.
+
+<sub style="color: #9CA3AF">Video instruction: [Copy code from VS Code, switch to AWS Lambda console, paste into Lambda editor]</sub>
 
 **Step 10:** Click **Deploy** to save the code.
 
@@ -1379,19 +1444,23 @@ Let's test everything end-to-end.
 
 <sub style="color: #9CA3AF">Video instruction: [Switch to AWS Console, navigate to S3, show file in review-analysis-uploads folder]</sub>
 
-File is there. Now let's check SQS.
+File is there. S3 sends a notification to SQS, which triggers Lambda.
 
-<sub style="color: #9CA3AF">Video instruction: [Navigate to SQS, show message count]</sub>
-
-Message received! Now let's check Lambda.
+**Note:** Lambda polls SQS very quickly - usually within 1-2 seconds. By the time we manually check SQS, the message is already processed and deleted. SQS doesn't maintain a history of processed messages, so we'll skip checking SQS and go straight to Lambda logs to see the processing.
 
 <sub style="color: #9CA3AF">Video instruction: [Navigate to Lambda, click Monitor tab, click View CloudWatch logs]</sub>
 
 Lambda is processing. Let's wait a moment...
 
-<sub style="color: #9CA3AF">Video instruction: [Show logs with processing messages]</sub>
+<sub style="color: #9CA3AF">Video instruction: [Click on the latest log stream to see execution logs]</sub>
 
-Processing complete! Now let's check if the results are in S3.
+Processing complete! You can see the logs showing:
+- Lambda received the SQS message
+- Downloaded the file from S3
+- Processed each review through Comprehend
+- Saved results back to S3
+
+Now let's check if the results are in S3.
 
 <sub style="color: #9CA3AF">Video instruction: [Navigate to S3, go to analysis-results folder, show result file]</sub>
 
