@@ -192,7 +192,23 @@ function App() {
         borderRadius: '8px',
         cursor: 'pointer'
       }} />
-      <br /><br />
+
+      {productInfo && (
+        <div style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          border: '2px solid rgba(255, 255, 255, 0.3)',
+          borderRadius: '8px',
+          padding: '16px',
+          marginBottom: '20px',
+          maxWidth: '600px'
+        }}>
+          <h3 style={{ margin: '0 0 12px 0', color: '#fff' }}>Product Information</h3>
+          <p style={{ margin: '4px 0', color: '#fff' }}><strong>Product ID:</strong> {productInfo.id}</p>
+          <p style={{ margin: '4px 0', color: '#fff' }}><strong>Product Name:</strong> {productInfo.name}</p>
+          <p style={{ margin: '4px 0', color: '#fff' }}><strong>Category:</strong> {productInfo.category}</p>
+          <p style={{ margin: '4px 0', color: '#fff' }}><strong>Release Date:</strong> {productInfo.release_date}</p>
+        </div>
+      )}
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '10px' }}>
         <button onClick={analyze} style={{ 
@@ -307,24 +323,6 @@ function App() {
           overflowX: 'auto'
         }}>
           <h3 style={{ fontSize: 'clamp(1.2rem, 4vw, 1.5rem)' }}>Analysis Results</h3>
-          
-          {results.analysis_results[0]?.original_review && (() => {
-            const firstReview = results.analysis_results[0].original_review;
-            const productInfo = firstReview.product_id || firstReview.product_name || firstReview.category;
-            
-            if (productInfo) {
-              return (
-                <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f0f8ff', borderRadius: '5px', border: '1px solid #4a90e2' }}>
-                  <h4 style={{ marginTop: 0, color: '#2c5aa0' }}>Product Information</h4>
-                  {firstReview.product_id && <p><strong>Product ID:</strong> {firstReview.product_id}</p>}
-                  {firstReview.product_name && <p><strong>Product Name:</strong> {firstReview.product_name}</p>}
-                  {firstReview.category && <p><strong>Category:</strong> {firstReview.category}</p>}
-                  {firstReview.release_date && <p><strong>Release Date:</strong> {firstReview.release_date}</p>}
-                </div>
-              );
-            }
-            return null;
-          })()}
           
           <p><strong>Source File:</strong> {results.source_file}</p>
           <p><strong>Processed At:</strong> {results.processed_at}</p>
