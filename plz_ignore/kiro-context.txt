@@ -150,6 +150,7 @@ pkill -f "vite"
 Both files contain product reviews for testing the analysis pipeline with different products and sentiment patterns.
 
 ### Recent Updates
+- **2026-03-07**: Updated Lambda function deployment to use correct S3 folder path (01-enterprise-ai-infrastructure/analysis-results/)
 - Fixed timestamp format mismatch between backend and Lambda
 - Added Recharts visualizations (language pie chart, sentiment bar chart)
 - Made frontend responsive

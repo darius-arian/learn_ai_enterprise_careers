@@ -82,7 +82,7 @@ function App() {
       const data = await response.json();
       
       if (response.ok) {
-        setStatus(`Request accepted (200 OK) - Analysis in progress...`);
+        setStatus(`Request accepted (200 OK) - Analysis in progress...\nExpected Result File: ${data.expectedResultFile}`);
         setAnalysisComplete(true);
         setExpectedResultFile(data.expectedResultFile);
       } else {
@@ -278,40 +278,8 @@ function App() {
         </button>
       </div>
 
-      <p>{status}</p>
+      <p style={{ whiteSpace: 'pre-line' }}>{status}</p>
       
-      {productInfo && (
-        <div style={{ 
-          marginTop: '10px', 
-          padding: '15px', 
-          backgroundColor: '#f0f8ff', 
-          borderRadius: '5px', 
-          border: '1px solid #4a90e2',
-          wordBreak: 'break-word'
-        }}>
-          <h4 style={{ marginTop: 0, color: '#2c5aa0', fontSize: 'clamp(1rem, 3vw, 1.2rem)' }}>Product Information</h4>
-          {productInfo.id && <p style={{ margin: '5px 0', color: '#333', fontSize: 'clamp(0.875rem, 2vw, 1rem)' }}><strong>Product ID:</strong> {productInfo.id}</p>}
-          {productInfo.name && <p style={{ margin: '5px 0', color: '#333', fontSize: 'clamp(0.875rem, 2vw, 1rem)' }}><strong>Product Name:</strong> {productInfo.name}</p>}
-          {productInfo.category && <p style={{ margin: '5px 0', color: '#333', fontSize: 'clamp(0.875rem, 2vw, 1rem)' }}><strong>Category:</strong> {productInfo.category}</p>}
-          {productInfo.release_date && <p style={{ margin: '5px 0', color: '#333', fontSize: 'clamp(0.875rem, 2vw, 1rem)' }}><strong>Release Date:</strong> {productInfo.release_date}</p>}
-        </div>
-      )}
-      
-      {expectedResultFile && (
-        <div style={{ 
-          marginTop: '10px', 
-          padding: '10px', 
-          backgroundColor: '#e8f4fd', 
-          borderRadius: '5px', 
-          border: '1px solid #b3d9ff', 
-          color: '#333',
-          wordBreak: 'break-all',
-          fontSize: 'clamp(0.875rem, 2vw, 1rem)'
-        }}>
-          <strong>Expected Result File:</strong> {expectedResultFile}
-        </div>
-      )}
-
       {results && (
         <div style={{ 
           marginTop: '20px', 
